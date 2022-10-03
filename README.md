@@ -30,6 +30,7 @@ Fast introduction to Rust for Java/Maven developers :D
 
 ### Commands: 
 The commands are easier than the code!
+
 `mvn build`
 ```
 cargo build 
@@ -40,7 +41,7 @@ cargo build
 cargo run 
 ```
 
-###Code: 
+### Code: 
 Nice, this part is a little bit more difficult than the others.
 
 - You can declare a constant (yes, with python-like snake_case) with:
