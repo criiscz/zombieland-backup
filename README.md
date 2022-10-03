@@ -18,7 +18,7 @@ docker stop dragonfly
 
 ## Integrate with your tools
 
-- [_] [Rust for VSCode](https://code.visualstudio.com/docs/languages/rust)
+- [ ] [Rust for VSCode](https://code.visualstudio.com/docs/languages/rust)
 
 ## Rust? WTF
 Fast introduction to Rust for Java/Maven developers :D
@@ -26,23 +26,26 @@ Fast introduction to Rust for Java/Maven developers :D
 ### Files: 
 - Cargo.toml -> This is like the pom.xml of Maven, all the dependencies go here.
 - main.rs    -> Yeah, Rust also have a main method as entry point
+- mod.rs    -> Java don't have this, but python do!, this is like the  `__init__.py` (In newer versions of Rust is optional)
 
 ### Commands: 
 The commands are easier than the code!
+`mvn build`
 ```
-cargo build  // mvn build
+cargo build 
 ```
 
+`mvn run`
 ```
-cargo run  // mvn run
+cargo run 
 ```
 
 ###Code: 
-Okey, this part is a little bit more difficult than the others.
+Nice, this part is a little bit more difficult than the others.
 
 - You can declare a constant (yes, with python-like snake_case) with:
 ```rust
-let i_am_a_contant = "Hi mom!";
+let i_am_a_constant = "Hi mom!";
 ```
 And yes, Rust is a language of semicolons and curly brackets :D
 
