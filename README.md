@@ -1,92 +1,98 @@
 # Zombieland Game
 
-
-
 ## Getting started
+The first thing you need to have is a Docker installation for run the tow containers of the project (DragonflyDB and Rust backend)
+And for development you need to have the latest Rust installation
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+## Run DragonflyDB
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
-
-## Add your files
-
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
-
+The first time you need to create the container with the following command:
 ```
-cd existing_repo
-git remote add origin https://academia.uptc.edu.co/cristian.sanchez08/zombieland-game.git
-git branch -M main
-git push -uf origin main
+docker run --network=host --ulimit memlock=-1 --name dragonfly docker.dragonflydb.io/dragonflydb/dragonfly
+```
+And then, you can manipulate the container as you want with these commands:
+```
+docker start dragonfly
+docker stop dragonfly
 ```
 
 ## Integrate with your tools
 
-- [ ] [Set up project integrations](https://academia.uptc.edu.co/cristian.sanchez08/zombieland-game/-/settings/integrations)
+- [_] [Rust for VSCode](https://code.visualstudio.com/docs/languages/rust)
 
-## Collaborate with your team
+## Rust? WTF
+Fast introduction to Rust for Java/Maven developers :D
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Automatically merge when pipeline succeeds](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+### Files: 
+- Cargo.toml -> This is like the pom.xml of Maven, all the dependencies go here.
+- main.rs    -> Yeah, Rust also have a main method as entry point
 
-## Test and Deploy
+### Commands: 
+The commands are easier than the code!
+```
+cargo build  // mvn build
+```
 
-Use the built-in continuous integration in GitLab.
+```
+cargo run  // mvn run
+```
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+###Code: 
+Okey, this part is a little bit more difficult than the others.
 
-***
+- You can declare a constant (yes, with python-like snake_case) with:
+```rust
+let i_am_a_contant = "Hi mom!";
+```
+And yes, Rust is a language of semicolons and curly brackets :D
 
-# Editing this README
+- The main function looks like this (like in Java, it doesn't have return)
+```rust
+fn main{
+  println!("Hello World!");
+}
+```
+- Important thing, Rust don't have garbage collector, and you don't need to manage the memory on your own, it has a new concept called borrow checking, where the pointers change the owner of each value, a basic pointer looks like this.
+```rust
+  let i_am_a_string: String = String::from("Soy un String");
+  let i_am_a_pointer_to_string: &String = &i_am_a_string;
+```
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!).  Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
+- Important thing, Rust **isn't a object oriented language** so **don't try to do objects**, the most similar thing that you can do here, is a structure with the keyword `struct`, the structures can't have methods inside.
+```rust
+struct IAmAStructure{
+  field: String,
+  otherField: usize
+}
+```
 
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+- If you want to create a method for a Structure (like a function inside a class) you need to create a `trait` and them, implement this trait for the structure, here is a example of trait
+```rust
+trait Imprimible {
+    fn do_something(element: &Element) -> String;
+}
+```
+For implementations in the structure, you can:
+```rust
+impl Imprimible for IAmAStructure {
+    fn do_something(element: &IAmAStructure) -> String {
+        String::from(element.field.clone())
+    }
+}
+```
+This means that you can do this, and the result will be the field of the structure
+```rust
+fn main() {
+    let element = IAmAStructure {
+        field: String::from("Esto es un mensaje"),
+        otherField: 23,
+    };
+    let message: String = IAmAStructure::do_something(&element);
+    println!("{}", message);
+}
+```
 
-## Name
-Choose a self-explaining name for your project.
+For more information, here is the [Rust Book](https://doc.rust-lang.org/book/).
+Happy Hacking! Att: Orlando :D 
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
