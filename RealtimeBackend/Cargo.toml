@@ -2,7 +2,13 @@
 name = "realtime_backend"
 version = "0.1.0"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+authors = ["Nojipiz"]
 
 [dependencies]
+tokio = { version = "1.21.2", features = ["net", "full"] }
+tokio-tungstenite = "0.17.2"
+futures-util = "0.3.24"
+
+# Logger dependencies
+log = "0.4.17"
+env_logger = "0.9.1"
