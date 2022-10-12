@@ -5,7 +5,7 @@ edition = "2021"
 authors = ["Nojipiz"]
 
 [dependencies]
-tokio = { version = "1.21.2", features = ["full", "net"] }
+tokio = { version = "1.21.2", features = ["full", "net", "time"] }
 tokio-tungstenite = "0.17.2"
 futures-util = "0.3.24"
 futures-channel = "0.3.24"
