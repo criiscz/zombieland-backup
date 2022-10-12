@@ -5,10 +5,7 @@ edition = "2021"
 authors = ["Nojipiz"]
 
 [dependencies]
-tokio = { version = "1.21.2", features = ["net", "full"] }
+tokio = { version = "1.21.2", features = ["full", "net"] }
 tokio-tungstenite = "0.17.2"
 futures-util = "0.3.24"
-
-# Logger dependencies
-log = "0.4.17"
-env_logger = "0.9.1"
+futures-channel = "0.3.24"
