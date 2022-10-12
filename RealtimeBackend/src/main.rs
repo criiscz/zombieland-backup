@@ -1,43 +1,81 @@
-use std::{env, io::Error};
-
-use futures_util::{future, StreamExt, TryStreamExt};
-use log::info;
+use futures_channel::mpsc::{unbounded, UnboundedSender};
+use futures_util::{future, pin_mut, StreamExt, TryStreamExt};
+use std::{env, io::Error, net::SocketAddr, sync::Arc, sync::Mutex};
 use tokio::net::{TcpListener, TcpStream};
+use tokio_tungstenite::tungstenite::Message;
+
+type Sender = UnboundedSender<Message>;
+type PlayersConnections = Arc<Mutex<Vec<Player>>>;
+
+struct Player {
+    name: String,
+    address: SocketAddr,
+    sender: Sender,
+}
 
 #[tokio::main]
 async fn main() -> Result<(), Error> {
-    let _ = env_logger::try_init();
     let addr = env::args()
         .nth(1)
         .unwrap_or_else(|| "127.0.0.1:8080".to_string());
-
     let try_socket = TcpListener::bind(&addr).await;
     let listener = try_socket.expect("Failed to bind");
-    info!("Listening on: {}", addr);
+    println!("Listening in: {}", addr);
+
+    let players_connections: PlayersConnections = Arc::new(Mutex::new(Vec::new()));
 
     while let Ok((stream, _)) = listener.accept().await {
-        tokio::spawn(accept_connection(stream));
+        let ref_connections = Arc::clone(&players_connections);
+        tokio::spawn(accept_connection(stream, ref_connections));
     }
-
     Ok(())
 }
 
-async fn accept_connection(stream: TcpStream) {
-    let addr = stream
+async fn accept_connection(stream: TcpStream, players_connections: PlayersConnections) {
+    let address = stream
         .peer_addr()
         .expect("connected streams should have a peer address");
-    info!("Peer address: {}", addr);
+    println!("Peer address: {}", address);
 
     let ws_stream = tokio_tungstenite::accept_async(stream)
         .await
         .expect("Error during the websocket handshake occurred");
 
-    info!("New WebSocket connection: {}", addr);
+    let (sender, receiver) = unbounded();
+    let player = Player {
+        name: "Pepe".to_owned(),
+        address,
+        sender,
+    };
+    players_connections.lock().unwrap().push(player);
 
-    let (write, read) = ws_stream.split();
+    let (writer, reader) = ws_stream.split();
+    println!("New WebSocket connection: {}", address);
 
-    read.try_filter(|msg| future::ready(msg.is_text() || msg.is_binary()))
-        .forward(write)
-        .await
-        .expect("Can't forward messages")
+    let incomming_broadcast = reader.try_for_each(|msg| {
+        let peers = players_connections.lock().unwrap();
+        let broadcast_recipients = peers
+            .iter()
+            .filter(|player| &&player.address != &&address)
+            .map(|player| &player.sender);
+
+        for recp in broadcast_recipients {
+            recp.unbounded_send(msg.clone()).unwrap();
+        }
+
+        future::ok(())
+    });
+
+    let receive_others = receiver.map(Ok).forward(writer);
+    pin_mut!(incomming_broadcast, receive_others);
+    future::select(incomming_broadcast, receive_others).await;
+
+    println!("{} disconnected", &address);
+    let index = players_connections
+        .lock()
+        .unwrap()
+        .iter()
+        .position(|element| element.address.clone() == address.clone())
+        .unwrap();
+    players_connections.lock().unwrap().remove(index);
 }
