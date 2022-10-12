@@ -1,7 +1,10 @@
 use futures_channel::mpsc::{unbounded, UnboundedSender};
 use futures_util::{future, pin_mut, StreamExt, TryStreamExt};
-use std::{env, io::Error, net::SocketAddr, sync::Arc, sync::Mutex};
-use tokio::net::{TcpListener, TcpStream};
+use std::{env, io::Error, net::SocketAddr, sync::Arc, sync::Mutex, time::Duration};
+use tokio::{
+    net::{TcpListener, TcpStream},
+    time::sleep,
+};
 use tokio_tungstenite::tungstenite::Message;
 
 type Sender = UnboundedSender<Message>;
@@ -24,11 +27,27 @@ async fn main() -> Result<(), Error> {
 
     let players_connections: PlayersConnections = Arc::new(Mutex::new(Vec::new()));
 
+    let ref_connections = Arc::clone(&players_connections);
+    tokio::spawn(send_greetings(ref_connections));
+
     while let Ok((stream, _)) = listener.accept().await {
         let ref_connections = Arc::clone(&players_connections);
         tokio::spawn(accept_connection(stream, ref_connections));
     }
+
     Ok(())
+}
+
+async fn send_greetings(players_connections: PlayersConnections) {
+    loop {
+        sleep(Duration::from_secs(2)).await;
+        let connections = players_connections.lock().unwrap();
+        let broadcast_recipients = connections.iter().map(|player| &player.sender);
+        for recp in broadcast_recipients {
+            recp.unbounded_send(Message::from("You are connected!").clone())
+                .unwrap();
+        }
+    }
 }
 
 async fn accept_connection(stream: TcpStream, players_connections: PlayersConnections) {
