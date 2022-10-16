@@ -3,9 +3,10 @@
         // DO NOT EDIT
         "outDir": "./dist",
         "target": "es6",
-        "module": "CommonJS",
+        "module": "commonjs",
         "sourceMap": true,
         // Set your preferences here for TypeScript
-        "strict": true
+        "strict": true,
+        "esModuleInterop": true,
     }
 }

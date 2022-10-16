@@ -36,15 +36,20 @@ module.exports = {
         // Do not accumulate files in ./dist
         new CleanWebpackPlugin(),
         // Copy assets to serve them
-        new CopyPlugin([{ from: 'assets', to: 'assets' }]),
+        new CopyPlugin({patterns:[{ from: 'assets', to: 'assets' }]}),
     ],
     devServer: {
-        // webpack-dev-server configuration
-        contentBase: path.join(__dirname, 'dist'),
-        // keep port in sync with VS Code launch.json
-        port: 3000,
-        // Hot-reloading, the sole reason to use webpack here <3
+        static: {
+            directory: path.join(__dirname, './dist')
+        },
+        compress: true,
+        historyApiFallback: true,
+        https: false,
+        open: true,
         hot: true,
-        writeToDisk: true,
+        port: 3000,
+        devMiddleware: {
+            writeToDisk: true,
+        },
     },
 }
