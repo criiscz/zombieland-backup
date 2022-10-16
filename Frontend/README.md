@@ -1,30 +1,27 @@
-# Pixi.JS TypeScript boilerplate
+# Zombieland Game
 
-I had a hard time setting up a development environment, so I decided to share it.
-It can be useful to start from there if you want to start developping a game for browsers quickly.
-This setup is supposed to be used with VS Code, as configuration is provided so that you hava all tools set up.
+## Getting started
+First we need to install the dependencies. We use [npm](https://www.npmjs.com/) for this. If you don't have npm installed, you can install it from [here](https://www.npmjs.com/get-npm).
 
-## Demo
-
-![pixijsstarterdemo](https://user-images.githubusercontent.com/1882000/117959954-cde93100-b31c-11eb-889b-4879bd596c6b.gif)
-
-## Requirements
-
--   Node JS and NPM
--   VS Code
--   Chrome
-
-## Setup
-
-```bash
+To install the dependencies, run the following command in the `Frontend` directory:
+```
 npm install
 ```
 
-## Development
+## Running the game
+To run the game, run the following command in the `Frontend` directory:
+```
+npm dev
+```
 
-Launch the `Complete development` launch configuration.
+## Building the game
+To build the game, run the following command in the `Frontend` directory:
+```
+npm build
+```
 
-Putting/removing breakpoints in the `.ts` files with VS Code in `/src` should work.
-If it does not, please open an issue.
-
-Edit the TypeScript files, the browser should refresh on save.
+## Code style
+We use [Prettier](https://prettier.io/) to format our code. To format the code, run the following command in the `Frontend` directory:
+```
+npm format
+```
