@@ -1,19 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="fcfe4a67-f81b-4b1a-9f29-0266a902e95f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/entities/player.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/loader.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/manifest-assets.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/scenes/Map.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/types.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/scenes/helloWorld.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webpack.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/webpack.config.js" afterDir="false" />
-    </list>
+    <list default="true" id="fcfe4a67-f81b-4b1a-9f29-0266a902e95f" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -100,7 +88,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1665873990956</updated>
-      <workItem from="1665873994779" duration="9796000" />
+      <workItem from="1665873994779" duration="10478000" />
     </task>
     <servers />
   </component>
