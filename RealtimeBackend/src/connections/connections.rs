@@ -58,11 +58,9 @@ impl Connections {
                     let message = result.unwrap_or(None);
                     match message {
                         Some(value) => {
-                            log::trace!("Message {}", value);
                             channel_sender.send(value.to_string()).unwrap();
                         },
                         None => {
-                            log::trace!("Interrumped");
                             break;
                         }
                     };
