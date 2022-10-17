@@ -8,4 +8,6 @@ authors = ["Nojipiz"]
 tokio = { version = "1.21.2", features = ["full", "net", "time"] }
 tokio-tungstenite = "0.17.2"
 futures-util = "0.3.24"
-futures-channel = "0.3.24"
+redis = "0.22.0"
+env_logger = "0.9.1"
+log = "0.4.0"
