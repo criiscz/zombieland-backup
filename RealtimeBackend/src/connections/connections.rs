@@ -10,9 +10,9 @@ use tokio_tungstenite::{tungstenite::Message, WebSocketStream};
 type PlayersConnections = Arc<Mutex<Vec<Player>>>;
 
 pub struct Connections {
-    pub connections: PlayersConnections,
-    pub channel_sender: Sender<String>,
-    pub channel_receiver: Receiver<String>,
+    connections: PlayersConnections,
+    channel_sender: Sender<String>,
+    channel_receiver: Receiver<String>,
 }
 
 impl Connections {
@@ -23,6 +23,12 @@ impl Connections {
             channel_sender: tx,
             channel_receiver: rx,
         }
+    }
+
+    pub fn get_channels(&self) -> (Sender<String>, Receiver<String>) {
+        let sender = self.channel_sender.clone();
+        let receiver = sender.subscribe();
+        (sender, receiver)
     }
 
     pub async fn start(&self, server_address: String) {

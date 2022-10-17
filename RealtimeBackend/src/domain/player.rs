@@ -1,5 +1,11 @@
-use std::net::SocketAddr;
+use serde::{Deserialize, Serialize};
 
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Player {
-    pub address: SocketAddr,
+    id: u16,
+    name: String,
+    position_y: f32,
+    position_x: f32,
+    skin: u8,
+    axis: u8,
 }
