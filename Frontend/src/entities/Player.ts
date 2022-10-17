@@ -32,8 +32,7 @@ class Player {
       this.player = new Sprite(texture);
       this.player.x = this.x;
       this.player.y = this.y;
-      this.player.anchor.set(0.5, 0.5);
-      this.player.scale.set(0.1, 0.1);
+      this.player.scale.set(0.05,0.05)
       app.stage.addChild(this.player);
     });
   }
