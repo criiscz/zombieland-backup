@@ -3,7 +3,7 @@ use tokio::sync::broadcast::Receiver;
 
 use crate::{
     actions::{attacks::handle_attacks, players::handle_events},
-    domain::{events::Bullet, input_message::InputMessage},
+    domain::{event::Bullet, input_message::InputMessage},
 };
 
 pub fn start_player_input_handler(mut receiver: Receiver<String>) {
