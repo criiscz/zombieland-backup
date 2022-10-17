@@ -1,3 +1,4 @@
+
 import { Sprite, Application } from "pixi.js";
 import {assets} from "../assetsLoader";
 
@@ -22,4 +23,5 @@ class Map {
 }
 
 export {Map};
+
 
