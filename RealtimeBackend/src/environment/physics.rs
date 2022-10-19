@@ -9,10 +9,13 @@ pub async fn run_physics(players: PlayersState, enemies: EnemiesState, bullets: 
 
 async fn bullets_movement(bullets: BulletsState) {
     // Todo[Bullet physics]
-    bullets.lock().await.iter_mut().for_each(|bullet| {
-        bullet.position_x = bullet.position_x + 1.0;
-        bullet.position_y = bullet.position_y + 1.0;
-        println!("{}", bullet);
+    bullets.lock().await.retain_mut(|bullet| {
+        if bullet.position_x < 1000.0 && bullet.position_y < 1000.0 {
+            bullet.position_x = bullet.position_x + 1.0;
+            bullet.position_y = bullet.position_y + 1.0;
+            return true;
+        }
+        return false;
     });
 }
 

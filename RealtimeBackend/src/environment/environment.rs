@@ -39,7 +39,7 @@ impl Environment {
 
         tokio::spawn(async move {
             loop {
-                sleep(Duration::from_millis(10)).await;
+                sleep(Duration::from_nanos(1000)).await;
                 run_interactions(players.clone(), enemies.clone(), bullets.clone()).await;
                 run_physics(players.clone(), enemies.clone(), bullets.clone()).await;
             }
