@@ -8,7 +8,7 @@ pub fn start_player_output_handler(sender: Sender<String>) {
             .await
             .expect("Can't connect with Dragonflydb");
         let mut pubsub = pubsub_connection
-            .psubscribe("channel1")
+            .psubscribe("zombieland_channel")
             .await
             .expect("Can't subscribe to channel");
         while let Some(message) = pubsub.next().await {
