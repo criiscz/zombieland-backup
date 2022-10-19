@@ -1,20 +1,19 @@
-use futures_util::{future, pin_mut, StreamExt, TryStreamExt};
-use std::{env, io::Error, net::SocketAddr, sync::Arc, sync::Mutex, time::Duration};
-use tokio::{
-    net::{TcpListener, TcpStream},
-    time::sleep,
-};
+use redis::Commands;
+use std::{sync::Arc, time::Duration};
+use tokio::{sync::Mutex, time::sleep};
 
-use crate::domain::{attack::Attack, enemy::Enemy, player::Player};
+use crate::domain::{attack::Bullet, enemy::Enemy, output_message::OutputMessage, player::Player};
 
-type Players = Arc<Mutex<Vec<Player>>>;
-type Enemies = Arc<Mutex<Vec<Enemy>>>;
-type Attacks = Arc<Mutex<Vec<Attack>>>;
+use super::{interactions::run_interactions, physics::run_physics};
+
+pub type PlayersState = Arc<Mutex<Vec<Player>>>;
+pub type EnemiesState = Arc<Mutex<Vec<Enemy>>>;
+pub type BulletsState = Arc<Mutex<Vec<Bullet>>>;
 
 pub struct Environment {
-    players: Players,
-    enemies: Enemies,
-    attacks: Attacks,
+    players: PlayersState,
+    enemies: EnemiesState,
+    attacks: BulletsState,
 }
 
 impl Environment {
@@ -26,7 +25,41 @@ impl Environment {
         }
     }
 
-    pub fn start() {
-        todo!("Make the start code!")
+    pub fn get_attacks_state(&self) -> BulletsState {
+        self.attacks.clone()
+    }
+
+    pub fn get_players_state(&self) -> PlayersState {
+        self.players.clone()
+    }
+
+    pub fn start(&self) {
+        let bullets = Arc::clone(&self.attacks);
+        let players = Arc::clone(&self.players);
+        let enemies = Arc::clone(&self.enemies);
+
+        tokio::spawn(async move {
+            let mut events_channel = redis::Client::open("redis://127.0.0.1/")
+                .unwrap()
+                .get_connection()
+                .unwrap();
+            loop {
+                sleep(Duration::from_secs(1)).await;
+                run_interactions(players.clone(), enemies.clone(), bullets.clone()).await;
+                run_physics(players.clone(), enemies.clone(), bullets.clone()).await;
+
+                let output_message = OutputMessage {
+                    players: players.lock().await.clone(),
+                    bullets: bullets.lock().await.clone(),
+                    enemies: enemies.lock().await.clone(),
+                };
+                events_channel
+                    .publish::<String, String, bool>(
+                        "zombieland_channel".to_owned(),
+                        serde_json::to_string(&output_message).unwrap(),
+                    )
+                    .unwrap();
+            }
+        });
     }
 }
