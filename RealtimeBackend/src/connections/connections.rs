@@ -58,7 +58,7 @@ impl Connections {
             .expect("Error during the websocket handshake occurred");
 
         let (mut writer, mut reader) = ws_stream.split();
-        log::trace!("New player connection: {}", &address);
+        log::trace!("New connection at {}", &address);
         loop {
             tokio::select! {
                 result = reader.try_next() => {
@@ -78,5 +78,6 @@ impl Connections {
                 }
             }
         }
+        log::trace!("Disconnection at {}", &address);
     }
 }
