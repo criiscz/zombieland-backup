@@ -65,7 +65,7 @@ impl Connections {
                     let message = result.unwrap_or(None);
                     match message {
                         Some(value) => {
-                            channel_sender.send(value.to_string()).unwrap();
+                            channel_sender.send(value.to_string()).unwrap_or(0);
                         },
                         None => {
                             break;

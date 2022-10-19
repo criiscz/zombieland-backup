@@ -14,6 +14,9 @@ pub fn start_player_input_handler(
 ) {
     tokio::spawn(async move {
         while let Ok(msg) = receiver.recv().await {
+            if !msg.is_empty() {
+                return log::trace!("Player disconnected");
+            }
             handle_input(msg, players_state.clone(), attacks_state.clone()).await;
         }
     });
