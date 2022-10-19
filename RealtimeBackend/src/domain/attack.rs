@@ -27,7 +27,7 @@ impl Display for Bullet {
         write!(
             f,
             "Bullet x:{} y:{} uid:{}",
-            self.position_x, self.position_y, self.attack_type
+            self.position_x, self.position_y, self.player_id
         )
     }
 }
