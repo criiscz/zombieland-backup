@@ -11,23 +11,24 @@ type PlayersConnections = Arc<Mutex<Vec<Player>>>;
 
 pub struct Connections {
     connections: PlayersConnections,
-    channel_sender: Sender<String>,
-    channel_receiver: Receiver<String>,
+    input_sender: Sender<String>,
+    output_sender: Sender<String>,
 }
 
 impl Connections {
     pub fn new() -> Connections {
-        let (tx, rx) = channel::<String>(20);
+        let (input_tx, _input_rx) = channel::<String>(20);
+        let (output_tx, _output_rx) = channel::<String>(20);
         Connections {
             connections: Arc::new(Mutex::new(Vec::new())),
-            channel_sender: tx,
-            channel_receiver: rx,
+            input_sender: input_tx,
+            output_sender: output_tx,
         }
     }
 
     pub fn get_channels(&self) -> (Sender<String>, Receiver<String>) {
-        let sender = self.channel_sender.clone();
-        let receiver = sender.subscribe();
+        let receiver = self.input_sender.clone().subscribe();
+        let sender = self.output_sender.clone();
         (sender, receiver)
     }
 
@@ -38,8 +39,8 @@ impl Connections {
         log::info!("Listening at {}", address);
 
         while let Ok((stream, _)) = listener.accept().await {
-            let sender = self.channel_sender.clone();
-            let suscriber = sender.subscribe();
+            let sender = self.input_sender.clone();
+            let suscriber = self.output_sender.subscribe();
             tokio::spawn(Connections::accept_connection(stream, sender, suscriber));
         }
     }
