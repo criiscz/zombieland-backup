@@ -32,6 +32,18 @@ impl Display for Bullet {
     }
 }
 
+impl Clone for Bullet {
+    fn clone(&self) -> Self {
+        Bullet {
+            attack_type: self.attack_type.clone(),
+            angle: self.angle.clone(),
+            position_y: self.position_y.clone(),
+            position_x: self.position_x.clone(),
+            player_id: self.player_id.clone(),
+        }
+    }
+}
+
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Bullet {
     pub attack_type: String,
