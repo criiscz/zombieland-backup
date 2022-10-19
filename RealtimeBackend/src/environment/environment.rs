@@ -44,7 +44,7 @@ impl Environment {
                 .get_connection()
                 .unwrap();
             loop {
-                sleep(Duration::from_micros(200)).await;
+                sleep(Duration::from_secs(1)).await;
                 run_interactions(players.clone(), enemies.clone(), bullets.clone()).await;
                 run_physics(players.clone(), enemies.clone(), bullets.clone()).await;
 
@@ -55,14 +55,3 @@ impl Environment {
         });
     }
 }
-
-// tokio::spawn(async {
-//     let client = redis::Client::open("redis://127.0.0.1/").unwrap();
-//     let mut connection = client.get_connection().unwrap();
-//     let mut pubsub = connection.as_pubsub();
-//     pubsub.subscribe("channel1");
-//     loop {
-//         let msg: String = pubsub.get_message().unwrap().get_payload().unwrap();
-//         log::info!("second {}", msg);
-//     }
-// });
