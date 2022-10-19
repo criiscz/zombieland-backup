@@ -1,5 +1,3 @@
-use std::time::Duration;
-
 use crate::environment::environment::Environment;
 
 use super::{
@@ -20,7 +18,7 @@ pub async fn start_server(server_address: String) {
     Environment::start(&environment);
 
     start_player_input_handler(receiver, players_state, attacks_state);
-    // start_player_output_handler(sender);
+    start_player_output_handler(sender);
 
     Connections::start(&connections_handler, server_address).await;
 }
