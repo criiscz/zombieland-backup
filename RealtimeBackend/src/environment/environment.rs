@@ -2,7 +2,7 @@ use redis::Commands;
 use std::{sync::Arc, time::Duration};
 use tokio::{sync::Mutex, time::sleep};
 
-use crate::domain::{attack::Bullet, enemy::Enemy, player::Player};
+use crate::domain::{attack::Bullet, enemy::Enemy, output_message::OutputMessage, player::Player};
 
 use super::{interactions::run_interactions, physics::run_physics};
 
@@ -48,8 +48,16 @@ impl Environment {
                 run_interactions(players.clone(), enemies.clone(), bullets.clone()).await;
                 run_physics(players.clone(), enemies.clone(), bullets.clone()).await;
 
+                let output_message = OutputMessage {
+                    players: players.lock().await.clone(),
+                    bullets: bullets.lock().await.clone(),
+                    enemies: enemies.lock().await.clone(),
+                };
                 events_channel
-                    .publish::<String, String, bool>("channel1".to_owned(), "message1".to_owned())
+                    .publish::<String, String, bool>(
+                        "zombieland_channel".to_owned(),
+                        serde_json::to_string(&output_message).unwrap(),
+                    )
                     .unwrap();
             }
         });
