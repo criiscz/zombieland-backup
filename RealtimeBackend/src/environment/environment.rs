@@ -44,7 +44,7 @@ impl Environment {
                 .get_connection()
                 .unwrap();
             loop {
-                sleep(Duration::from_secs(1)).await;
+                sleep(Duration::from_millis(10)).await;
                 run_interactions(players.clone(), enemies.clone(), bullets.clone()).await;
                 run_physics(players.clone(), enemies.clone(), bullets.clone()).await;
 
