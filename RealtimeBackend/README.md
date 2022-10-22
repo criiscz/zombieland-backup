@@ -1,11 +1,17 @@
 # Zombieland Game
 
+## Start DragonflyDB + Rust Server in One Command!
+Just execute the `start.lua`script in your terminal like this.
+```
+lua start.lua
+```
+
 ## Getting started
 The first thing you need to have is a Docker installation for run the tow containers of the project (DragonflyDB and Rust backend)
 And for development you need to have the latest Rust installation
 
 ## Run DragonflyDB
-
+If you already have executed the start.lua script, you **mustn't execute this**.
 The first time you need to create the container with the following command:
 ```
 docker run --network=host --ulimit memlock=-1 --name dragonfly docker.dragonflydb.io/dragonflydb/dragonfly
