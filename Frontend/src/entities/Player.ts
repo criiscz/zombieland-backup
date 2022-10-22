@@ -1,10 +1,11 @@
 import { Application, Sprite } from 'pixi.js';
 import { IPlayer } from '../types';
 import { assets } from '../assetsLoader';
+import { Connection } from '../connections/connection';
 
 class Player {
     private player: Sprite;
-    private id: string;
+    private id: number;
     private name: string;
     private x: number;
     private y: number;
@@ -38,7 +39,7 @@ class Player {
         });
     }
 
-    public update(map: { [key: string]: boolean }) {
+    public update(map: { [key: string]: boolean }, connection: Connection) {
         const validKeys = [
             'w',
             'a',
@@ -69,8 +70,31 @@ class Player {
             if (map['d'] || map['ArrowRight'] || map['D']) {
                 this.player.x += this.speed;
             }
+            const data = JSON.stringify({
+                player: this.getData(),
+                attacks: [],
+            });
+            connection.sendData(data);
         }
+    }
+
+    public getData(): Object {
+        return {
+            id: this.id,
+            name: this.name,
+            position_x: this.player.x,
+            position_y: this.player.y,
+            skin: 2,
+            axis: 1,
+        };
+    }
+    public getId(): number {
+        return this.id;
+    }
+    public updatePosition(x: number, y: number) {
+        this.player.x = x;
+        this.player.y = y;
     }
 }
 
-export {Player};
+export { Player };
