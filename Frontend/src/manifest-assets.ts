@@ -1,20 +1,21 @@
 export const manifest = {
-  bundles:[{
-    name:'load-screen',
-    assets:[
-      {
-        name: 'background',
-        srcs: 'sunset.png',
-      },
-      {
-        name: 'bar',
-        srcs: 'load-bar.{png,webp}',
-      }
-    ]
-  },
+  bundles: [
     {
-      name:'game-screen',
-      assets:[
+      name: 'load-screen',
+      assets: [
+        {
+          name: 'background',
+          srcs: 'sunset.png',
+        },
+        {
+          name: 'bar',
+          srcs: 'load-bar.{png,webp}',
+        },
+      ],
+    },
+    {
+      name: 'game-screen',
+      assets: [
         {
           name: 'character',
           srcs: 'robot.png',
@@ -22,7 +23,8 @@ export const manifest = {
         {
           name: 'enemy',
           srcs: 'bad-guy.png',
-        }
-      ]
-    }]
-}
+        },
+      ],
+    },
+  ],
+};
