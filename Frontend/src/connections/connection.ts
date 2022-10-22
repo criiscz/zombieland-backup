@@ -2,7 +2,7 @@ import { Application } from '@pixi/app';
 import { Player } from '../entities/Player';
 
 export class Connection {
-    ws: WebSocket = new WebSocket('ws://192.168.1.16:8080');
+    ws: WebSocket = new WebSocket('ws://127.0.0.1:8080');
     renderedPlayers: Player[] = [];
     constructor(app: Application, myId: number) {
         this.ws.onmessage = (event) => {
