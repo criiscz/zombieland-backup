@@ -50,6 +50,7 @@ const main = (app: Application) => {
     initListeners();
     initGameLoop();
   };
+  // COMMIT #100 !!!
 
   initGame();
 };
