@@ -5,7 +5,6 @@ RUN USER=root cargo new --bin realtime_backend
 WORKDIR /realtime_backend
 
 # 2. Copy our manifests
-COPY ./Cargo.lock ./Cargo.lock
 COPY ./Cargo.toml ./Cargo.toml
 
 # 3. Build only the dependencies to cache them
