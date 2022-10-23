@@ -15,9 +15,10 @@ pub fn start_player_input_handler(
     tokio::spawn(async move {
         while let Ok(msg) = receiver.recv().await {
             if msg.is_empty() {
-                return log::trace!("Empty message message received");
+                log::trace!("Empty message message received");
+            } else {
+                handle_input(msg, players_state.clone(), attacks_state.clone()).await;
             }
-            handle_input(msg, players_state.clone(), attacks_state.clone()).await;
         }
     });
 }
