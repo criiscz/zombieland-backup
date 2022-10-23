@@ -1,10 +1,13 @@
+use std::env;
+
 use futures_util::StreamExt;
 use redis_async::{client, resp::FromResp};
 use tokio::sync::broadcast::Sender;
 
 pub fn start_player_output_handler(sender: Sender<String>) {
+    let cache_address = env::var("CACHE_ADDRESS").unwrap_or("127.0.0.1:6379".to_string());
     tokio::spawn(async move {
-        let pubsub_connection = client::pubsub_connect("127.0.0.1:6379")
+        let pubsub_connection = client::pubsub_connect(cache_address)
             .await
             .expect("Can't connect with Dragonflydb");
         let mut pubsub = pubsub_connection

@@ -1,5 +1,5 @@
 use redis::Commands;
-use std::{sync::Arc, time::Duration};
+use std::{env, sync::Arc, time::Duration};
 use tokio::{sync::Mutex, time::sleep};
 
 use crate::domain::{attack::Bullet, enemy::Enemy, output_message::OutputMessage, player::Player};
@@ -37,9 +37,10 @@ impl Environment {
         let bullets = Arc::clone(&self.attacks);
         let players = Arc::clone(&self.players);
         let enemies = Arc::clone(&self.enemies);
+        let cache_address = env::var("CACHE_ADDRESS").unwrap_or("127.0.0.1:6379".to_string());
 
         tokio::spawn(async move {
-            let mut events_channel = redis::Client::open("redis://127.0.0.1/")
+            let mut events_channel = redis::Client::open(String::from("redis://") + &cache_address)
                 .unwrap()
                 .get_connection()
                 .unwrap();
