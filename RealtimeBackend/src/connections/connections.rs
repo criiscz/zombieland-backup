@@ -1,5 +1,5 @@
 use futures_util::{SinkExt, StreamExt, TryStreamExt};
-use std::env;
+use std::{env, fmt::format};
 use tokio::{
     net::{TcpListener, TcpStream},
     sync::broadcast::{channel, Receiver, Sender},
@@ -60,7 +60,8 @@ impl Connections {
                     let message = result.unwrap_or(None);
                     match message {
                         Some(value) => {
-                            channel_sender.send(value.to_string()).unwrap_or(0);
+                            let input_addressed = format!("{}||{}", value, &address);
+                            channel_sender.send(input_addressed).unwrap_or(0);
                         },
                         None => {
                             break;
@@ -73,6 +74,7 @@ impl Connections {
                 }
             }
         }
+        channel_sender.send(format!("{}", &address)).unwrap_or(0);
         log::trace!("Disconnection at {}", &address);
     }
 }
