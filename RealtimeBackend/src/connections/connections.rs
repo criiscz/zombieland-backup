@@ -55,7 +55,7 @@ impl Connections {
             .expect("connected streams should have a peer address");
         let ws_stream: WebSocketStream<TcpStream> = tokio_tungstenite::accept_async(stream)
             .await
-            .expect("Error during the websocket handshake occurred");
+            .expect("Error websocket handshake");
 
         let (mut writer, mut reader) = ws_stream.split();
         log::trace!("New connection at {}", &address);
@@ -65,6 +65,7 @@ impl Connections {
                     let message = result.unwrap_or(None);
                     match message {
                         Some(value) => {
+                            // TODO: FIX UNCONNECTION BUG
                             channel_sender.send(value.to_string()).unwrap_or(0);
                         },
                         None => {

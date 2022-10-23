@@ -1,52 +1,57 @@
 import { Application } from 'pixi.js';
 import { Map } from './scenes/Map';
 import { Player } from './entities/Player';
+import { Connection } from './connections/connection';
 
-let app = new Application();
+function getRandomInt(max: number) {
+  return Math.floor(Math.random() * max);
+}
 
 const main = (app: Application) => {
-    const initGame = () => {
-        new Map(app);
-        new ScreenInitial(app);
-        // new ScreenGameOver(app);
-        // new ScreenGame(app);
-    };
+  const myId = getRandomInt(20);
+  const connection = new Connection(app, myId);
+  const keys: { [key: string]: boolean } = {};
+  const player = new Player(app, {
+    id: myId,
+    name: 'Player',
+    x: 100,
+    y: 100,
+    axis: 0,
+    speed: 15,
+    hp: 100,
+    maxHp: 100,
+    score: 0,
+    isDead: false,
+  });
+  const keydown = (e: KeyboardEvent) => {
+    keys[e.key] = true;
+  };
 
-    const initSocket = () => {
-        // const socket = io('http://localhost:3000');
-        // socket.on('connect', () => {
-        //     console.log('connected');
-        //     initGame();
-        // });
-        // socket.on('disconnect', () => {
-        //     console.log('disconnected');
-        // });
-        // socket.on('player', (player: IPlayer) => {
-        //     console.log(player);
-        //     new Player(app, player);
-        // });
-    };
+  const keyup = (e: KeyboardEvent) => {
+    keys[e.key] = false;
+  };
 
-    const player = new Player(app, {
-        id: '1',
-        name: 'Player',
-        x: 100,
-        y: 100,
-        axis: 0,
-        speed: 5,
-        hp: 100,
-        maxHp: 100,
-        score: 0,
-        isDead: false,
+  const initGameLoop = () => {
+    app.ticker.add(() => {
+      player.update(keys, connection);
     });
+  };
 
-    // Listen for keydown events
+  const initListeners = () => {
+    document.addEventListener('keydown', keydown);
+    document.addEventListener('keyup', keyup);
+  };
 
-    const mapKeys: { [key: string]: boolean } = {};
-    onkeydown = onkeyup = (e) => {
-        mapKeys[e.key] = e.type == 'keydown';
-        player.update(mapKeys);
-    };
+  const initGame = () => {
+    new Map(app);
+    // new ScreenInitial(app);
+    // new ScreenGameOver(app);
+    // new ScreenGame(app);
+    initListeners();
+    initGameLoop();
+  };
+
+  initGame();
 };
 
 export { main };

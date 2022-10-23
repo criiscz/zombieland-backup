@@ -5,7 +5,7 @@ The first thing you need to have is a Docker installation for run the tow contai
 And for development you need to have the latest Rust installation
 
 ## Run DragonflyDB
-
+If you already have executed the start.lua script, you **mustn't execute this**.
 The first time you need to create the container with the following command:
 ```
 docker run --network=host --ulimit memlock=-1 --name dragonfly docker.dragonflydb.io/dragonflydb/dragonfly

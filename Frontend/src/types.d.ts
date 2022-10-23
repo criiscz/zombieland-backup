@@ -1,11 +1,11 @@
-import { Texture } from "pixi.js";
+import { Texture } from 'pixi.js';
 
 interface SpritesList {
   [key: string]: Texture | undefined;
 }
 
 interface IPlayer {
-  id: string;
+  id: number;
   name: string;
   x: number;
   y: number;

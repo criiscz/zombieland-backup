@@ -1,0 +1,23 @@
+version: "3.8"
+services:
+  frontend:
+    build: ./Frontend/
+    ports: 
+      - 3000:3000
+    depends_on:
+      - realtime
+
+  realtime:
+    build: ./RealtimeBackend/
+    ports: 
+      - 8090:8090
+    depends_on:
+      - cache
+    environment:
+      CACHE_ADDRESS: "cache:6379"
+      RUST_LOG: "realtime_backend"
+      RUST_BACKTRACE: "0"
+  cache: 
+    image: docker.dragonflydb.io/dragonflydb/dragonfly
+    ports:
+      - 6379:6379
