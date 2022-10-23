@@ -87,6 +87,10 @@ class Player {
     this.player.x = x;
     this.player.y = y;
   }
+
+  public delete(app: Application) {
+    app.stage.removeChild(this.player);
+  }
 }
 
 export { Player };
