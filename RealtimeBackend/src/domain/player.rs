@@ -10,6 +10,8 @@ pub struct Player {
     pub position_x: f32,
     pub skin: u8,
     pub axis: u8,
+    #[serde(skip_deserializing)]
+    pub connection_address: String,
 }
 
 impl Clone for Player {
@@ -22,6 +24,7 @@ impl Clone for Player {
             position_x: self.position_x.clone(),
             skin: self.skin.clone(),
             axis: self.axis.clone(),
+            connection_address: self.connection_address.clone(),
         }
     }
 }
