@@ -40,18 +40,25 @@ class Player {
   }
 
   public update(map: { [key: string]: boolean }, connection: Connection) {
+    let hasChangedPosition = false;
     if (map['w'] || map['ArrowUp'] || map['W']) {
       this.player.y -= this.speed;
+      hasChangedPosition = true;
     }
     if (map['a'] || map['ArrowLeft'] || map['A']) {
       this.player.x -= this.speed;
+      hasChangedPosition = true;
     }
     if (map['s'] || map['ArrowDown'] || map['S']) {
       this.player.y += this.speed;
+      hasChangedPosition = true;
     }
     if (map['d'] || map['ArrowRight'] || map['D']) {
       this.player.x += this.speed;
+      hasChangedPosition = true;
     }
+    if (!hasChangedPosition) return;
+
     const data = JSON.stringify({
       player: this.getData(),
       attacks: [],
