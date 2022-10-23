@@ -1,16 +1,12 @@
-use crate::domain::player::Player;
 use futures_util::{SinkExt, StreamExt, TryStreamExt};
-use std::{env, sync::Arc, sync::Mutex};
+use std::env;
 use tokio::{
     net::{TcpListener, TcpStream},
     sync::broadcast::{channel, Receiver, Sender},
 };
 use tokio_tungstenite::{tungstenite::Message, WebSocketStream};
 
-type PlayersConnections = Arc<Mutex<Vec<Player>>>;
-
 pub struct Connections {
-    connections: PlayersConnections,
     input_sender: Sender<String>,
     output_sender: Sender<String>,
 }
@@ -20,7 +16,6 @@ impl Connections {
         let (input_tx, _input_rx) = channel::<String>(20);
         let (output_tx, _output_rx) = channel::<String>(20);
         Connections {
-            connections: Arc::new(Mutex::new(Vec::new())),
             input_sender: input_tx,
             output_sender: output_tx,
         }
@@ -65,7 +60,6 @@ impl Connections {
                     let message = result.unwrap_or(None);
                     match message {
                         Some(value) => {
-                            // TODO: FIX UNCONNECTION BUG
                             channel_sender.send(value.to_string()).unwrap_or(0);
                         },
                         None => {
