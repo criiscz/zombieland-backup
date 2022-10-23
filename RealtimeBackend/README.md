@@ -1,16 +1,5 @@
 # Zombieland Game
 
-## Start DragonflyDB + Rust Server in One Command!
-Dependencies:
-  - Docker
-  - Docker Compose
-Just execute docker compose, which will run the `docker-compose.yml` file, this will start all the containers of the project at the same time.
-
-```
-docker-compose up
-```
-And nothing more, visit your `localhost:3000` to enter the game
-
 ## Getting started
 The first thing you need to have is a Docker installation for run the tow containers of the project (DragonflyDB and Rust backend)
 And for development you need to have the latest Rust installation
