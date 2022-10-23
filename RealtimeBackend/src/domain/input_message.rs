@@ -12,7 +12,8 @@ pub struct InputMessage<T: Attack> {
 }
 
 impl InputMessage<Bullet> {
-    pub fn autocomplete(&mut self) {
+    pub fn complete_information(&mut self, address: &str) {
+        self.player.connection_address = address.to_owned();
         self.attacks.iter_mut().for_each(|attack| {
             attack.position_y = self.player.position_y;
             attack.position_x = self.player.position_x;

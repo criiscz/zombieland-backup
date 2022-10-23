@@ -15,36 +15,49 @@ export class Connection {
     this.ws.send(data);
   }
 
+  /**
+    My logic here was shit, sorry (again) friend :D
+    We need to check if a player has been disconnected from the server, and remove the sprite!
+    I think a inner join can work here, this logic must be perfect!
+  **/
   handleInput(input: string, app: Application, myId: number) {
-    const players: any[] = JSON.parse(input).players;
-    players
-      .filter((current) => current.id != myId)
-      .forEach((current) => {
-        const isAlreadyInList = this.renderedPlayers.find(
-          (player) => player.getId() == current.id
+    const players: any[] = JSON.parse(input).players.filter(
+      (player: any) => player.id !== myId
+    );
+    this.renderedPlayers.forEach((renderedPlayer) => {
+      let incommingPlayer: any = players.find(
+        (element) => element.id === renderedPlayer.getId()
+      );
+      if (incommingPlayer) {
+        renderedPlayer.updatePosition(
+          incommingPlayer.position_x,
+          incommingPlayer.position_y
         );
-        if (isAlreadyInList) {
-          isAlreadyInList.updatePosition(
-            current.position_x,
-            current.position_y
-          );
-        } else {
-          this.renderedPlayers.push(
-            new Player(app, {
-              id: current.id,
-              name: current.name,
-              x: current.position_x,
-              y: current.position_y,
-              axis: current.axis,
-              speed: 15,
-              hp: current.hp,
-              maxHp: 100,
-              score: current.kills,
-              isDead: false,
-            })
-          );
-        }
-      });
+      } else {
+        renderedPlayer.delete(app);
+      }
+    });
+    players.forEach((current) => {
+      const isAlreadyInList = this.renderedPlayers.find(
+        (player) => player.getId() == current.id
+      );
+      if (!isAlreadyInList) {
+        this.renderedPlayers.push(
+          new Player(app, {
+            id: current.id,
+            name: current.name,
+            x: current.position_x,
+            y: current.position_y,
+            axis: current.axis,
+            speed: 15,
+            hp: current.hp,
+            maxHp: 100,
+            score: current.kills,
+            isDead: false,
+          })
+        );
+      }
+    });
   }
 
   isConnected() {

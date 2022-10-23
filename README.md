@@ -1,7 +1,9 @@
 # ZOMBIELAND - Beta
 
 ## MAJOR BUGS
-  - The server don't work again if a player has been disconnected!.
+  - All fixed!
+## Things to improve
+  - Logic at client at handling server message on player drawing.
 
 ## Start all the project in one command.
 Dependencies:
