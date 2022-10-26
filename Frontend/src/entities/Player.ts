@@ -1,16 +1,16 @@
-import { Application, Sprite } from 'pixi.js';
+import { Application, Rectangle, Sprite } from 'pixi.js';
 import { IPlayer } from '../types';
 import { assets } from '../assetsLoader';
 import { Connection } from '../connections/connection';
 
 class Player {
-  private player: Sprite;
+  player: Sprite;
   private id: number;
-  private name: string;
-  private x: number;
-  private y: number;
+  name: string;
+  x: number;
+  y: number;
   private axis: number;
-  private speed: number;
+  speed: number;
   private hp: number;
   private maxHp: number;
   private score: number;
@@ -33,27 +33,34 @@ class Player {
       this.player = new Sprite(texture);
       this.player.x = this.x;
       this.player.y = this.y;
-      this.player.anchor.set(0.5, 0.5);
+      this.player.width = 50;
+      this.player.height = 50;
       this.player.scale.set(0.1, 0.1);
-      app.stage.addChild(this.player);
+      this.player.anchor.set(0, 0);
+      this.player.name = 'player';
+      app.stage.addChild(this.player).zIndex = 1;
     });
   }
 
   public update(map: { [key: string]: boolean }, connection: Connection) {
     let hasChangedPosition = false;
     if (map['w'] || map['ArrowUp'] || map['W']) {
+      this.y = this.player.y;
       this.player.y -= this.speed;
       hasChangedPosition = true;
     }
     if (map['a'] || map['ArrowLeft'] || map['A']) {
+      this.x = this.player.x;
       this.player.x -= this.speed;
       hasChangedPosition = true;
     }
     if (map['s'] || map['ArrowDown'] || map['S']) {
+      this.y = this.player.y;
       this.player.y += this.speed;
       hasChangedPosition = true;
     }
     if (map['d'] || map['ArrowRight'] || map['D']) {
+      this.x = this.player.x;
       this.player.x += this.speed;
       hasChangedPosition = true;
     }
