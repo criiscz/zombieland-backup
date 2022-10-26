@@ -1,22 +1,44 @@
-import { Sprite, Application } from 'pixi.js';
+import { Application, Sprite } from 'pixi.js';
 import { assets } from '../assetsLoader';
 
 class Map {
-  private app: Application;
-  private map: Sprite;
+  private readonly app: Application;
+  public width!: number;
+  public height!: number;
 
   constructor(app: Application) {
     this.app = app;
-    this.map = new Sprite();
+    this.generateMap(64);
+  }
 
-    assets.map.then((texture) => {
-      this.map = new Sprite(texture);
-      this.map.anchor.set(0.5, 0.5);
-      this.map.x = this.app.screen.width / 2;
-      this.map.y = this.app.screen.height / 2;
-
-      this.app.stage.addChildAt(this.map, 0);
+  public async load() {
+    return Promise.all([
+      assets.mapTiles[0],
+      assets.mapTiles[1],
+      assets.mapTiles[2],
+    ]).then((textures) => {
+      return textures;
     });
+  }
+
+  public generateMap(tileSize = 32) {
+    this.load().then((tiles) => {
+      for (let i = 0; i < 150; i++) {
+        for (let j = 0; j < 150; j++) {
+          const tile = new Sprite(tiles[Math.floor(Math.random() * 3)]);
+          tile.x = i * tileSize;
+          tile.y = j * tileSize;
+          tile.scale.set(2, 2);
+          this.app.stage.addChild(tile).zIndex = 0;
+        }
+      }
+    });
+    this.width = 150 * tileSize;
+    this.height = 150 * tileSize;
+  }
+
+  public decorateMap(func: Function) {
+    func(this.app);
   }
 }
 
