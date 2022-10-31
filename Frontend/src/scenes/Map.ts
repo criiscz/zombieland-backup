@@ -23,8 +23,8 @@ class Map {
 
   public generateMap(tileSize = 32) {
     this.load().then((tiles) => {
-      for (let i = 0; i < 150; i++) {
-        for (let j = 0; j < 150; j++) {
+      for (let i = 0; i < 15; i++) {
+        for (let j = 0; j < 15; j++) {
           const tile = new Sprite(tiles[Math.floor(Math.random() * 3)]);
           tile.x = i * tileSize;
           tile.y = j * tileSize;
