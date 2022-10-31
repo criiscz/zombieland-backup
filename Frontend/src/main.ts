@@ -97,8 +97,8 @@ const main = (app: Application) => {
     app.ticker.add(() => {
       player.update(keys, connection, map);
       collisionPlayer(player);
-      // collisionBush(player);
-      //collisionMap(player);
+      collisionBush(player);
+      collisionMap(player);
     });
   };
 
