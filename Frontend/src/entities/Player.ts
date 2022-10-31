@@ -30,25 +30,36 @@ class Player {
     this.score = player.score;
     this.isDead = player.isDead;
 
-    assets.playerLoader(app, () => {
-      const texture = app.loader.resources.player.spritesheet;
-      if (!texture) {
-        console.error("Can't load player animation");
-        return;
-      }
-      const playerTexture = new AnimatedSprite(texture.animations.player);
-      playerTexture.animationSpeed = 0.1;
-      playerTexture.play();
-      this.player = playerTexture;
-      this.player.x = this.x;
-      this.player.y = this.y;
-      this.player.width = 50;
-      this.player.height = 50;
-      this.player.scale.set(1.2, 1.2);
-      this.player.anchor.set(0, 0);
-      this.player.name = 'player';
-      map.addChild(this.player);
-    });
+    if (
+      app.loader.resources.player &&
+      app.loader.resources.player.spritesheet
+    ) {
+      this.initPlayer(app, map);
+    } else {
+      assets.playerLoader(app, () => {
+        this.initPlayer(app, map);
+      });
+    }
+  }
+
+  public initPlayer(app: Application, map: Map) {
+    const texture = app.loader.resources.player.spritesheet;
+    if (!texture) {
+      console.error("Can't load player animation");
+      return;
+    }
+    const playerTexture = new AnimatedSprite(texture.animations.player);
+    playerTexture.animationSpeed = 0.1;
+    playerTexture.play();
+    this.player = playerTexture;
+    this.player.x = this.x;
+    this.player.y = this.y;
+    this.player.width = 50;
+    this.player.height = 50;
+    this.player.scale.set(1.2, 1.2);
+    this.player.anchor.set(0, 0);
+    this.player.name = 'player';
+    map.addChild(this.player);
   }
 
   public update(
