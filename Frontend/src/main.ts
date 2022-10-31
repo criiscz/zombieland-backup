@@ -82,14 +82,14 @@ const main = (app: Application) => {
     if (player.player.x < 0) {
       player.player.x = 0;
     }
-    if (player.player.x > app.screen.width - player.player.width) {
-      player.player.x = app.screen.width - player.player.width;
+    if (player.player.x > map.width - player.player.width) {
+      player.player.x = map.width - player.player.width;
     }
     if (player.player.y < 0) {
       player.player.y = 0;
     }
-    if (player.player.y > app.screen.height - player.player.height) {
-      player.player.y = app.screen.height - player.player.height;
+    if (player.player.y > map.height - player.player.height) {
+      player.player.y = map.height - player.player.height;
     }
   };
 

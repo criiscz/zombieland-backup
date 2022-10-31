@@ -35,8 +35,8 @@ class Map {
 
   public generateMap(tileSize = 32) {
     this.load().then((tiles) => {
-      for (let i = 0; i < 15; i++) {
-        for (let j = 0; j < 15; j++) {
+      for (let i = 0; i < 100; i++) {
+        for (let j = 0; j < 100; j++) {
           const tile = new Sprite(tiles[Math.floor(Math.random() * 3)]);
           tile.x = i * tileSize;
           tile.y = j * tileSize;
@@ -47,7 +47,7 @@ class Map {
     });
     this.width = 150 * tileSize;
     this.height = 150 * tileSize;
-    this.app.stage.addChild(this.container);
+    this.app.stage.addChild(this.container).zIndex = 0;
   }
 
   public addChild(object: DisplayObject): DisplayObject {

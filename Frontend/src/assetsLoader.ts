@@ -1,4 +1,5 @@
-import { Application } from '@pixi/app';
+import { Application } from 'pixi.js';
+import '../assets/entities/player.json';
 import { Assets } from '@pixi/assets';
 
 // load assets
