@@ -17,6 +17,9 @@ class Player {
   private score: number;
   private isDead: boolean;
 
+  /*
+    Maybe the map can be allocated in someplace in shared memory? Like a module or something
+  */
   constructor(app: Application, map: Map, player: IPlayer) {
     this.player = new Sprite();
     this.id = player.id;
