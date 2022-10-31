@@ -1,7 +1,4 @@
 import * as PIXI from 'pixi.js';
-import { assets as ass } from './assetsLoader';
-import { Player } from './entities/Player';
-import { Map } from './scenes/Map';
 import { main } from './main';
 
 // Create a Pixi Application

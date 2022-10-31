@@ -1,4 +1,4 @@
-import { Application, Sprite } from 'pixi.js';
+import { Application, InteractionEvent, Sprite } from 'pixi.js';
 import { Map } from './scenes/Map';
 import { Player } from './entities/Player';
 import { Connection } from './connections/connection';
@@ -10,10 +10,10 @@ function getRandomInt(max: number) {
 
 const main = (app: Application) => {
   const myId = getRandomInt(20);
-  const connection = new Connection(app, myId);
-  const keys: { [key: string]: boolean } = {};
   const map = new Map(app);
-  const player = new Player(app, {
+  const connection = new Connection(app, map, myId);
+  const keys: { [key: string]: boolean } = {};
+  const player = new Player(app, map, {
     id: myId,
     name: 'Player',
     x: 100,
@@ -25,6 +25,11 @@ const main = (app: Application) => {
     score: 0,
     isDead: false,
   });
+  const initAppPreferences = () => {
+    app.stage.sortableChildren = true;
+    app.stage.interactive = true;
+  };
+
   const keydown = (e: KeyboardEvent) => {
     keys[e.key] = true;
   };
@@ -33,8 +38,19 @@ const main = (app: Application) => {
     keys[e.key] = false;
   };
 
+  const mouseMove = (event: InteractionEvent) => {
+    const position = event.data.global;
+    // TODO: Create the angle of the shoot
+  };
+
+  const initListeners = () => {
+    document.addEventListener('keydown', keydown);
+    document.addEventListener('keyup', keyup);
+    app.stage.on('pointermove', mouseMove);
+  };
+
   const collisionBush = (player: Player) => {
-    app.stage.children.forEach((child) => {
+    map.getChildren().forEach((child) => {
       if (child instanceof Sprite && child.name === 'bush') {
         if (child.getBounds().intersects(player.player.getBounds())) {
           console.log('collision');
@@ -47,7 +63,7 @@ const main = (app: Application) => {
   };
 
   const collisionPlayer = (player: Player) => {
-    app.stage.children.forEach((child) => {
+    map.getChildren().forEach((child) => {
       if (
         child instanceof Sprite &&
         child.name === 'player' &&
@@ -79,26 +95,11 @@ const main = (app: Application) => {
 
   const initGameLoop = () => {
     app.ticker.add(() => {
-      player.update(keys, connection);
-      collisionBush(player);
+      player.update(keys, connection, map);
       collisionPlayer(player);
+      collisionBush(player);
       collisionMap(player);
     });
-  };
-
-  const initListeners = () => {
-    document.addEventListener('keydown', keydown);
-    document.addEventListener('keyup', keyup);
-  };
-
-  const initGame = () => {
-    addBushes();
-    // new ScreenInitial(app);
-    // new ScreenGameOver(app);
-    // new ScreenGame(app);
-    initListeners();
-    initGameLoop();
-    app.stage.sortableChildren = true;
   };
 
   // extract to another file
@@ -114,11 +115,21 @@ const main = (app: Application) => {
             bush.anchor.set(0, 0);
             bush.scale.set(scale, scale);
             bush.name = 'bush';
-            app.stage.addChild(bush).zIndex = 2;
+            map.addChild(bush).zIndex = 2;
           }
         }
       });
     });
+  };
+
+  const initGame = () => {
+    addBushes();
+    // new ScreenInitial(app);
+    // new ScreenGameOver(app);
+    // new ScreenGame(app);
+    initAppPreferences();
+    initListeners();
+    initGameLoop();
   };
 
   initGame();
