@@ -3,6 +3,7 @@ import { Map } from './scenes/Map';
 import { Player } from './entities/Player';
 import { Connection } from './connections/connection';
 import { assets } from './assetsLoader';
+import { MainScene } from './scenes/MainScene';
 
 function getRandomInt(max: number) {
   return Math.floor(Math.random() * max);
@@ -124,6 +125,7 @@ const main = (app: Application) => {
 
   const initGame = () => {
     addBushes();
+    new MainScene(app);
     // new ScreenInitial(app);
     // new ScreenGameOver(app);
     // new ScreenGame(app);
