@@ -28,6 +28,7 @@
   "dependencies": {
     "@pixi/assets": "^6.5.6",
     "@pixi/filter-blur": "^7.0.2",
+    "pixi-text-input": "^1.0.6",
     "pixi.js": "^6.5.6"
   }
 }

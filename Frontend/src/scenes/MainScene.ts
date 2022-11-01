@@ -1,80 +1,34 @@
-import { Application, Container, Graphics, Text } from 'pixi.js';
+import { Application, Graphics, Text } from 'pixi.js';
+import Scene from './Scene';
 
-class MainScene extends Container {
+class MainScene extends Scene {
   app: Application;
 
   constructor(app: Application) {
-    super();
+    super(app);
     this.app = app;
     this.buildScene();
   }
 
   public buildScene() {
-    this.initContainer();
-    this.createBackground();
+    this.setBackground(0x000000, 0.2);
     this.createTitle();
     this.createButtons();
-    this.visible = true;
+    this.visible = false;
     this.app.stage.addChild(this);
   }
 
-  private createBackground() {
-    const background = new Graphics();
-    background.beginFill(0x000000, 0.2);
-    background.drawRect(0, 0, this.app.screen.width, this.app.screen.height);
-    background.endFill();
-    this.addChild(background);
-  }
-
   private createTitle() {
-    const text = new Text('ZombieLand');
-    text.x = this.app.screen.width / 2;
-    text.y = this.app.screen.height / 4;
-    text.style.fontFamily = 'Poppins';
-    text.style.fontWeight = 'bold';
-    text.style.fontSize = 60;
-    text.style.stroke = 0x000000;
-    text.style.strokeThickness = 6;
-    text.style.fill = 0xffffff;
-    text.anchor.set(0.5, 0.5);
-    this.addChild(text);
-  }
-
-  private createButton(
-    text: string,
-    x: number,
-    y: number,
-    width: number,
-    height: number
-  ) {
-    const button = new Graphics();
-    button.beginFill(0x0a2936, 1);
-    button.drawRoundedRect(x, y, width, height, 10);
-    button.endFill();
-
-    const buttonText = new Text(text);
-    buttonText.x = x + width / 2;
-    buttonText.y = y + height / 2;
-    buttonText.style.fontFamily = 'Poppins';
-    buttonText.style.fontSize = 20;
-    buttonText.style.fill = 0xffffff;
-    buttonText.anchor.set(0.5, 0.5);
-    button.buttonMode = true;
-    button.interactive = true;
-    button.addChild(buttonText);
-    this.addChild(button);
-    return button;
-  }
-
-  private initContainer() {
-    this.createBorder();
-  }
-
-  private createBorder() {
-    const border = new Graphics();
-    border.lineStyle(2, 0x000000, 1);
-    border.drawRect(this.x, this.y, this.width, this.height);
-    this.addChild(border);
+    this.createText(
+      new Text('ZombieLand', {
+        fontFamily: 'Poppins',
+        fontSize: 40,
+        fill: 0x000000,
+        stroke: 0xffffff,
+        strokeThickness: 6,
+        fontWeight: 'bold',
+      })
+    );
   }
 
   private createButtons() {
@@ -84,14 +38,22 @@ class MainScene extends Container {
     const buttonY = this.app.screen.height / 2 - buttonHeight / 2;
 
     const buttonLogin = this.createButton(
-      'Login',
+      new Text('Login', {
+        fontFamily: 'Poppins',
+        fontSize: 20,
+        fill: 0xffffff,
+      }),
       buttonX,
       buttonY,
       buttonWidth,
       buttonHeight
     );
     const buttonRegister = this.createButton(
-      'Register',
+      new Text('Register', {
+        fontFamily: 'Poppins',
+        fontSize: 20,
+        fill: 0xffffff,
+      }),
       buttonX,
       buttonY + 100,
       buttonWidth,

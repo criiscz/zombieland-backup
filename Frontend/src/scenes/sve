@@ -1,0 +1,29 @@
+ const _text = '';
+    const rect = new Graphics();
+    rect.beginFill(0xfff000, 1);
+    rect.drawRoundedRect(0, 500, 100, 200, 10);
+    rect.endFill();
+
+    const text = new Text('Username', {
+      fontFamily: 'Poppins',
+      fontSize: 20,
+      fill: 0x000000,
+    });
+
+    text.x = 100 / 2;
+    text.y = 500 + 200 / 2;
+    text.anchor.set(0.5, 0.5);
+
+    const caret = new Graphics();
+    caret.beginFill(0x000000, 1);
+    caret.drawRect(100 / 2, 500 + 200 / 2, 1, 20);
+    caret.endFill();
+
+    rect.interactive = true;
+    rect.on('pointerdown', () => {
+      console.log('click');
+    });
+
+    rect.addChild(text);
+    rect.addChild(caret);
+    this.addChild(rect);

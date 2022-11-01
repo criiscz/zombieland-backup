@@ -18,7 +18,7 @@ class Map {
     this.container = new Container();
     this.generateMap(64);
     this.setContainerParameters();
-    this.setBlur();
+    this.setBlur(0);
   }
 
   public async load() {
@@ -34,8 +34,8 @@ class Map {
   public setContainerParameters() {
     this.container.height = this.app.screen.height;
     this.container.width = this.app.screen.width;
-    this.container.x = 0;
-    this.container.y = 0;
+    this.container.x = this.app.screen.width / 2;
+    this.container.y = this.app.screen.height / 2;
   }
 
   public generateMap(tileSize = 32, mapSize = 64) {
