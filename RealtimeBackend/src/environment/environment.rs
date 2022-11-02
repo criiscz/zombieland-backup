@@ -43,9 +43,9 @@ impl Environment {
                 "Can't find an active connection to Pub/Sub channel, is the DragonglyDB running?",
             );
 
-        tokio::spawn(
-            async move { Environment::game_loop(bullets, enemies, players, events_channel) },
-        );
+        tokio::spawn(async move {
+            Environment::game_loop(bullets, enemies, players, events_channel).await
+        });
     }
 
     async fn game_loop(
