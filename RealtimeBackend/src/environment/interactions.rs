@@ -4,7 +4,7 @@ mod interaction;
 
 use self::bullets_damage_enemies::DamageToEnemiesByBullets;
 use crate::{
-    domain::state_types::{BulletsState, EnemiesState, PlayersState},
+    domain::state_types::GameState,
     environment::interactions::{
         enemies_damage_players::DamageToPlayersByEnemies, interaction::Interaction,
     },
@@ -16,11 +16,17 @@ pub struct InteractionsModule {
 }
 
 impl InteractionsModule {
-    pub fn new(players: PlayersState, enemies: EnemiesState, bullets: BulletsState) -> Self {
+    pub fn new(game_state: GameState) -> Self {
         InteractionsModule {
             interactions: vec![
-                Box::new(DamageToPlayersByEnemies::new(players, enemies.clone())),
-                Box::new(DamageToEnemiesByBullets::new(enemies, bullets)),
+                Box::new(DamageToPlayersByEnemies::new(
+                    game_state.players,
+                    game_state.enemies.clone(),
+                )),
+                Box::new(DamageToEnemiesByBullets::new(
+                    game_state.enemies,
+                    game_state.bullets,
+                )),
             ],
         }
     }

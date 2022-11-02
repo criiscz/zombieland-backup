@@ -3,7 +3,7 @@ mod enemies_physics;
 mod physic;
 
 use self::{bullets_physics::BulletsPhysics, enemies_physics::EnemiesPhysics, physic::Physic};
-use crate::domain::state_types::{BulletsState, EnemiesState, PlayersState};
+use crate::domain::state_types::GameState;
 use futures_util::{future::join_all, stream::FuturesUnordered};
 
 pub struct PhysicsModule {
@@ -11,10 +11,10 @@ pub struct PhysicsModule {
 }
 
 impl PhysicsModule {
-    pub fn new(players: PlayersState, enemies: EnemiesState, bullets: BulletsState) -> Self {
+    pub fn new(game_state: GameState) -> Self {
         let physics: Vec<Box<dyn Physic + Sync + Send>> = vec![
-            Box::new(BulletsPhysics::new(bullets)),
-            Box::new(EnemiesPhysics::new(enemies, players)),
+            Box::new(BulletsPhysics::new(game_state.bullets)),
+            Box::new(EnemiesPhysics::new(game_state.enemies, game_state.players)),
         ];
         PhysicsModule { physics }
     }
