@@ -5,7 +5,7 @@ use tokio::{sync::Mutex, time::sleep};
 use super::{interactions::InteractionsModule, physics::PhysicsModule};
 use crate::domain::{
     output_message::OutputMessage,
-    state_types::{BulletsState, EnemiesState, PlayersState},
+    state_types::{BulletsState, EnemiesState, GameState, PlayersState},
 };
 
 pub struct Environment {
@@ -32,9 +32,12 @@ impl Environment {
     }
 
     pub fn start(&self) {
-        let bullets = Arc::clone(&self.attacks);
-        let players = Arc::clone(&self.players);
-        let enemies = Arc::clone(&self.enemies);
+        let game_state = GameState {
+            bullets: Arc::clone(&self.attacks),
+            players: Arc::clone(&self.players),
+            enemies: Arc::clone(&self.enemies),
+        };
+
         let cache_address = env::var("CACHE_ADDRESS").unwrap_or("127.0.0.1:6379".to_string());
         let events_channel = redis::Client::open(String::from("redis://") + &cache_address)
             .unwrap()
@@ -43,37 +46,29 @@ impl Environment {
                 "Can't find an active connection to Pub/Sub channel, is the DragonglyDB running?",
             );
 
-        tokio::spawn(async move {
-            Environment::game_loop(bullets, enemies, players, events_channel).await
-        });
+        tokio::spawn(async move { Environment::game_loop(game_state, events_channel).await });
     }
 
-    async fn game_loop(
-        bullets: BulletsState,
-        enemies: EnemiesState,
-        players: PlayersState,
-        mut events_channel: Connection,
-    ) {
-        let interactions =
-            InteractionsModule::new(players.clone(), enemies.clone(), bullets.clone());
-        let physics = PhysicsModule::new(players.clone(), enemies.clone(), bullets.clone());
+    async fn game_loop(game_state: GameState, mut events_channel: Connection) {
+        let interactions = InteractionsModule::new(game_state.clone());
+        let physics = PhysicsModule::new(game_state.clone());
+
         loop {
             sleep(Duration::from_millis(10)).await;
 
             interactions.run().await;
             physics.run().await;
-
-            let output_message = OutputMessage {
-                players: players.lock().await.clone(),
-                bullets: bullets.lock().await.clone(),
-                enemies: enemies.lock().await.clone(),
-            };
-            events_channel
-                .publish::<String, String, bool>(
-                    "zombieland_channel".to_owned(),
-                    serde_json::to_string(&output_message).unwrap(),
-                )
-                .unwrap();
+            Environment::send_state_to_channel(game_state.clone(), &mut events_channel).await;
         }
+    }
+
+    async fn send_state_to_channel(game_state: GameState, events_channel: &mut Connection) {
+        let output_message = OutputMessage::from(game_state.to_owned()).await;
+        events_channel
+            .publish::<String, String, bool>(
+                "zombieland_channel".to_owned(),
+                serde_json::to_string(&output_message).unwrap(),
+            )
+            .unwrap();
     }
 }
