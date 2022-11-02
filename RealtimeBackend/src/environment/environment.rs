@@ -2,7 +2,7 @@ use redis::{Commands, Connection};
 use std::{env, sync::Arc, time::Duration};
 use tokio::{sync::Mutex, time::sleep};
 
-use super::{interactions::run_interactions, physics::run_physics};
+use super::{interactions::InteractionsModule, physics::PhysicsModule};
 use crate::domain::{
     output_message::OutputMessage,
     state_types::{BulletsState, EnemiesState, PlayersState},
@@ -54,10 +54,14 @@ impl Environment {
         players: PlayersState,
         mut events_channel: Connection,
     ) {
+        let interactions =
+            InteractionsModule::new(players.clone(), enemies.clone(), bullets.clone());
+        let physics = PhysicsModule::new(players.clone(), enemies.clone(), bullets.clone());
         loop {
             sleep(Duration::from_millis(10)).await;
-            run_interactions(players.clone(), enemies.clone(), bullets.clone()).await;
-            run_physics(players.clone(), enemies.clone(), bullets.clone()).await;
+
+            interactions.run().await;
+            physics.run().await;
 
             let output_message = OutputMessage {
                 players: players.lock().await.clone(),
