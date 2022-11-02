@@ -1,5 +1,5 @@
 use futures_util::{SinkExt, StreamExt, TryStreamExt};
-use std::{env, fmt::format};
+use std::env;
 use tokio::{
     net::{TcpListener, TcpStream},
     sync::broadcast::{channel, Receiver, Sender},
@@ -51,9 +51,9 @@ impl Connections {
         let ws_stream: WebSocketStream<TcpStream> = tokio_tungstenite::accept_async(stream)
             .await
             .expect("Error websocket handshake");
-
         let (mut writer, mut reader) = ws_stream.split();
-        log::trace!("New connection at {}", &address);
+
+        log::debug!("New connection at {}", &address);
         loop {
             tokio::select! {
                 result = reader.try_next() => {
@@ -75,6 +75,6 @@ impl Connections {
             }
         }
         channel_sender.send(format!("{}", &address)).unwrap_or(0);
-        log::trace!("Disconnection at {}", &address);
+        log::debug!("Disconnection at {}", &address);
     }
 }
