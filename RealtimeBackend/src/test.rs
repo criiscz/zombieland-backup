@@ -15,6 +15,7 @@ fn point_distance() {
     assert_eq!(expected, distance_between(first, second))
 }
 
+#[allow(dead_code)]
 pub fn fake_players(amount: u16) -> PlayersState {
     let mut list = vec![];
     for index in 0..amount {
@@ -23,6 +24,7 @@ pub fn fake_players(amount: u16) -> PlayersState {
     Arc::new(Mutex::new(list))
 }
 
+#[allow(dead_code)]
 fn fake_player(index: u16) -> Player {
     Player {
         id: index,
@@ -36,6 +38,7 @@ fn fake_player(index: u16) -> Player {
     }
 }
 
+#[allow(dead_code)]
 pub fn fake_enemies(amount: u16) -> EnemiesState {
     let mut list = vec![];
     for index in 0..amount {
@@ -44,6 +47,7 @@ pub fn fake_enemies(amount: u16) -> EnemiesState {
     Arc::new(Mutex::new(list))
 }
 
+#[allow(dead_code)]
 fn fake_enemy(index: u16) -> Enemy {
     Enemy {
         position_y: 100.0 + index as f32,

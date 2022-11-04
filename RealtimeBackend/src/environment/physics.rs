@@ -5,7 +5,7 @@ mod test;
 
 use self::{bullets_physics::BulletsPhysics, enemies_physics::EnemiesPhysics, physic::Physic};
 use crate::domain::state_types::GameState;
-use futures_util::{future::join_all, stream::FuturesUnordered};
+use futures_util::stream::FuturesUnordered;
 
 pub struct PhysicsModule {
     physics: Vec<Box<dyn Physic + Sync + Send>>,
@@ -26,6 +26,8 @@ impl PhysicsModule {
             .iter()
             .map(|physic| physic.run())
             .collect::<FuturesUnordered<_>>();
-        join_all(tasks).await;
+        for task in tasks {
+            task.await
+        }
     }
 }
