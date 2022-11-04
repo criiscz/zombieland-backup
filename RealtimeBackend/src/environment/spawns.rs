@@ -29,6 +29,5 @@ impl SpawnsModule {
         for task in tasks {
             task.await
         }
-        log::info!("Spawns Finished");
     }
 }

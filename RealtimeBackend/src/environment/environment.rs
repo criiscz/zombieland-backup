@@ -3,9 +3,12 @@ use std::{env, sync::Arc, time::Duration};
 use tokio::{sync::Mutex, time::sleep};
 
 use super::{interactions::InteractionsModule, physics::PhysicsModule};
-use crate::domain::{
-    output_message::OutputMessage,
-    state_types::{BulletsState, EnemiesState, GameState, PlayersState},
+use crate::{
+    domain::{
+        output_message::OutputMessage,
+        state_types::{BulletsState, EnemiesState, GameState, PlayersState},
+    },
+    environment::spawns::SpawnsModule,
 };
 
 pub struct Environment {
@@ -51,26 +54,28 @@ impl Environment {
 
     async fn game_loop(game_state: GameState, mut events_channel: Connection) {
         loop {
+            let interactions = InteractionsModule::new(game_state.clone());
+            let physics = PhysicsModule::new(game_state.clone());
+            let spawns = SpawnsModule::new(game_state.clone());
             sleep(Duration::from_millis(10)).await;
-            let state = game_state.clone();
-            let other_state = game_state.clone();
             _ = tokio::join!(
                 tokio::spawn(async move {
-                    let interactions = InteractionsModule::new(state.clone());
                     interactions.run().await;
                 }),
                 tokio::spawn(async move {
-                    let physics = PhysicsModule::new(other_state.clone());
                     physics.run().await;
-                })
+                }),
+                tokio::spawn(async move {
+                    spawns.run().await;
+                }),
             );
 
-            Environment::send_state_to_channel(game_state.clone(), &mut events_channel).await;
+            Environment::send_state_to_channel(game_state.to_owned(), &mut events_channel).await;
         }
     }
 
     async fn send_state_to_channel(game_state: GameState, events_channel: &mut Connection) {
-        let output_message = OutputMessage::from(game_state.to_owned()).await;
+        let output_message = OutputMessage::from(game_state).await;
         events_channel
             .publish::<String, String, bool>(
                 "zombieland_channel".to_owned(),

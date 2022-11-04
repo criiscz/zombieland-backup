@@ -17,11 +17,10 @@ impl EnemiesSpawns {
         EnemiesSpawns { enemies, players }
     }
 
-    async fn get_spawn_amount(&self) -> u8 {
+    async fn get_spawn_amount(&self) -> usize {
         let enemies_amount = self.enemies.lock().await.len();
         let players_amount = self.players.lock().await.len();
-        let spawn_amount = players_amount * 3 - enemies_amount;
-        spawn_amount as u8
+        players_amount * 3 - enemies_amount
     }
 }
 
@@ -34,7 +33,7 @@ impl Spawn for EnemiesSpawns {
         }
     }
 
-    async fn spawn_enemies(&self, amount: u8) {
+    async fn spawn_enemies(&self, amount: usize) {
         for _ in 0..amount {
             self.enemies.lock().await.push(Enemy::new())
         }

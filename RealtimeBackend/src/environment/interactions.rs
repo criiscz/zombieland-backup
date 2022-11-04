@@ -9,7 +9,7 @@ use crate::{
         enemies_damage_players::DamageToPlayersByEnemies, interaction::Interaction,
     },
 };
-use futures_util::{future::join_all, stream::FuturesUnordered};
+use futures_util::stream::FuturesUnordered;
 
 pub struct InteractionsModule {
     interactions: Vec<Box<dyn Interaction + Sync + Send>>,
@@ -37,6 +37,8 @@ impl InteractionsModule {
             .iter()
             .map(|interaction| interaction.run())
             .collect::<FuturesUnordered<_>>();
-        join_all(tasks).await;
+        for task in tasks {
+            task.await;
+        }
     }
 }
