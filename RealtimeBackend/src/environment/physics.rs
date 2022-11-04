@@ -1,6 +1,7 @@
 mod bullets_physics;
 mod enemies_physics;
 mod physic;
+mod test;
 
 use self::{bullets_physics::BulletsPhysics, enemies_physics::EnemiesPhysics, physic::Physic};
 use crate::domain::state_types::GameState;
