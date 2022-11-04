@@ -50,14 +50,21 @@ impl Environment {
     }
 
     async fn game_loop(game_state: GameState, mut events_channel: Connection) {
-        let interactions = InteractionsModule::new(game_state.clone());
-        let physics = PhysicsModule::new(game_state.clone());
-
         loop {
             sleep(Duration::from_millis(10)).await;
+            let state = game_state.clone();
+            let other_state = game_state.clone();
+            _ = tokio::join!(
+                tokio::spawn(async move {
+                    let interactions = InteractionsModule::new(state.clone());
+                    interactions.run().await;
+                }),
+                tokio::spawn(async move {
+                    let physics = PhysicsModule::new(other_state.clone());
+                    physics.run().await;
+                })
+            );
 
-            interactions.run().await;
-            physics.run().await;
             Environment::send_state_to_channel(game_state.clone(), &mut events_channel).await;
         }
     }
