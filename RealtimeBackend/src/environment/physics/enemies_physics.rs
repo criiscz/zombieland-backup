@@ -6,7 +6,7 @@ use crate::{
     utils::distance_between,
 };
 use async_trait::async_trait;
-use futures_util::future::join_all;
+use futures_util::{future::join_all, stream::ForEachConcurrent};
 
 use super::physic::Physic;
 
@@ -70,9 +70,11 @@ impl EnemiesPhysics {
 impl Physic for EnemiesPhysics {
     async fn run(&self) {
         let mut enemies = self.enemies.lock().await;
-        let tasks = enemies
+        let searchs = enemies
             .iter_mut()
             .map(|enemy| EnemiesPhysics::search_for_player(self.players.clone(), enemy));
-        join_all(tasks).await;
+        for task in searchs {
+            task.await
+        }
     }
 }
