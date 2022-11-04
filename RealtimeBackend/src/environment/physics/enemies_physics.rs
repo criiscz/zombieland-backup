@@ -70,7 +70,7 @@ impl Physic for EnemiesPhysics {
         let mut enemies = self.enemies.lock().await;
         let tasks = enemies
             .iter_mut()
-            .map(|enemy| return EnemiesPhysics::search_for_player(self.players.clone(), enemy));
+            .map(|enemy| EnemiesPhysics::search_for_player(self.players.clone(), enemy));
         for search in tasks {
             search.await
         }

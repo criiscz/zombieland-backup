@@ -8,7 +8,7 @@ pub struct BulletsPhysics {
 }
 
 impl BulletsPhysics {
-    pub fn new(bullets: BulletsState) -> BulletsPhysics {
+    pub fn new(bullets: BulletsState) -> Self {
         BulletsPhysics { bullets }
     }
 }

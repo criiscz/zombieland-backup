@@ -1,5 +1,7 @@
 use async_trait::async_trait;
+
 #[async_trait]
-pub trait Physic {
+pub trait Spawn {
     async fn run(&self);
+    async fn spawn_enemies(&self, amount: u8);
 }
