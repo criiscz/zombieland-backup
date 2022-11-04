@@ -6,6 +6,7 @@ mod actions;
 mod connections;
 mod domain;
 mod environment;
+mod test;
 
 #[tokio::main]
 async fn main() -> Result<(), Error> {
