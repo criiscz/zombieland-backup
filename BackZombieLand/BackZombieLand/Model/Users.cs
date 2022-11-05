@@ -11,7 +11,7 @@ namespace BackZombieLand.Model
         [Column(TypeName = "varchar(50)")]
         public string nickName { get; set; }
         [Required]
-        [Column(TypeName = "varchar(50)")]
+        [Column(TypeName = "varchar(250)")]
         public string email{ get; set; }
         [Required]
         [Column(TypeName = "varchar(250)")]

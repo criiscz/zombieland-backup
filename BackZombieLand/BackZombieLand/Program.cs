@@ -2,8 +2,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Data;
 var builder = WebApplication.CreateBuilder(args);
+const String keyConnectionString = "PostreSQLConnection";
+var myConnectionString = builder.Configuration.GetConnectionString(keyConnectionString);
 builder.Services.AddDbContext<BackZombieLandContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("devconnection") ?? throw new InvalidOperationException("Connection string 'BackZombieLandContext' not found.")));
+    options.UseNpgsql(myConnectionString));
 
 // Add services to the container.
 
