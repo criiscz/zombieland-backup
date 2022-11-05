@@ -58,7 +58,7 @@ impl Environment {
         let spawns = SpawnsModule::new(game_state.clone());
 
         loop {
-            sleep(Duration::from_millis(4)).await;
+            sleep(Duration::from_millis(10)).await;
             interactions.run().await;
             physics.run().await;
             spawns.run().await;
