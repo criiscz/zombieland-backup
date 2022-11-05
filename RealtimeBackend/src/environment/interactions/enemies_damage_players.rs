@@ -1,5 +1,6 @@
 use crate::domain::{
     enemy::Enemy,
+    player::Player,
     state_types::{EnemiesState, PlayersState},
 };
 use async_trait::async_trait;
@@ -16,15 +17,17 @@ impl DamageToPlayersByEnemies {
         DamageToPlayersByEnemies { players, enemies }
     }
 
-    pub async fn run_interaction(&self, enemy: &Enemy) {
-        self.players.lock().await.retain_mut(|player| {
-            if enemy.position_y == player.position_y && enemy.position_x == player.position_x {
-                player.health = player.health - 1;
-                if player.health == 0 {
-                    return false;
+    pub async fn run_interaction(&self, enemies: Vec<Enemy>, mut players: Vec<Player>) {
+        enemies.iter().for_each(|enemy| {
+            players.retain_mut(|player| {
+                if enemy.position_y == player.position_y && enemy.position_x == player.position_x {
+                    player.health = player.health - 1;
+                    if player.health == 0 {
+                        return false;
+                    }
                 }
-            }
-            return true;
+                return true;
+            });
         });
     }
 }
@@ -32,8 +35,11 @@ impl DamageToPlayersByEnemies {
 #[async_trait]
 impl Interaction for DamageToPlayersByEnemies {
     async fn run(&self) {
-        for enemy in self.enemies.lock().await.iter() {
-            Self::run_interaction(&self, enemy).await;
+        match tokio::join!(self.enemies.lock(), self.players.lock()) {
+            (enemies, players) => {
+                self.run_interaction(enemies.to_owned(), players.to_owned())
+                    .await;
+            }
         }
     }
 }

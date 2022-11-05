@@ -1,4 +1,5 @@
 use crate::domain::{
+    attack::Bullet,
     enemy::Enemy,
     state_types::{BulletsState, EnemiesState},
 };
@@ -16,12 +17,14 @@ impl DamageToEnemiesByBullets {
         DamageToEnemiesByBullets { bullets, enemies }
     }
 
-    pub async fn run_interaction(&self, enemy: &Enemy) {
-        self.bullets.lock().await.retain_mut(|bullet| {
-            if enemy.position_y == bullet.position_y && enemy.position_x == bullet.position_x {
-                return false;
-            }
-            return true;
+    pub async fn run_interaction(&self, enemies: Vec<Enemy>, mut bullets: Vec<Bullet>) {
+        enemies.iter().for_each(|enemy| {
+            bullets.retain_mut(|bullet| {
+                if enemy.position_y == bullet.position_y && enemy.position_x == bullet.position_x {
+                    return false;
+                }
+                return true;
+            })
         });
     }
 }
@@ -29,8 +32,11 @@ impl DamageToEnemiesByBullets {
 #[async_trait]
 impl Interaction for DamageToEnemiesByBullets {
     async fn run(&self) {
-        for enemy in self.enemies.lock().await.iter() {
-            Self::run_interaction(&self, enemy).await;
-        }
+        match tokio::join!(self.enemies.lock(), self.bullets.lock()) {
+            (enemies, bullets) => {
+                self.run_interaction(enemies.to_owned(), bullets.to_owned())
+                    .await;
+            }
+        };
     }
 }
