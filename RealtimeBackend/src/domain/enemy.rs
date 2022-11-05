@@ -18,3 +18,14 @@ impl Clone for Enemy {
         }
     }
 }
+
+impl Enemy {
+    pub fn new() -> Enemy {
+        Enemy {
+            position_y: 100.0,
+            position_x: 100.0,
+            skin: 0,
+            axis: 0,
+        }
+    }
+}
