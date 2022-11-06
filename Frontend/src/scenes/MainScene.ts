@@ -19,7 +19,7 @@ class MainScene extends Scene {
   }
 
   private createTitle() {
-    this.createText(
+    const text = this.createText(
       new Text('ZombieLand', {
         fontFamily: 'Poppins',
         fontSize: 40,
@@ -29,6 +29,10 @@ class MainScene extends Scene {
         fontWeight: 'bold',
       })
     );
+
+    text.x = this.app.screen.width / 2;
+    text.y = this.app.screen.height / 2 - 200;
+    text.anchor.set(0.5, 0.5);
   }
 
   private createButtons() {

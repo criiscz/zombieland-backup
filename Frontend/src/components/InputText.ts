@@ -1,85 +1,134 @@
-import {
-  Application,
-  Container,
-  DisplayObject,
-  Graphics,
-  Sprite,
-  Text,
-  TextStyle,
-} from 'pixi.js';
+import { Application, Container, Graphics, Text } from 'pixi.js';
 
-class InputText {
-  app: Application;
-  text?: string;
-  width: number;
-  height: number;
-  x: number;
-  y: number;
-  placeholder?: string;
+class InputText extends Container {
+  _width: number;
+  _height: number;
+  text: Text;
+  realText: string;
   password: boolean;
+  caret: Graphics;
+  _active: boolean;
 
-  constructor(
-    app: Application,
-    text: string,
-    placeholder = 'Input a text...',
-    textStyle: TextStyle,
-    width = 200,
-    height = 50,
-    password = false,
-    xyPoint = [0, 0]
-  ) {
-    this.app = app;
+  constructor(width: number, height: number, text: Text, password = false) {
+    super();
+    this._width = width;
+    this._height = height;
     this.text = text;
-    this.placeholder = placeholder;
-    this.width = width;
-    this.height = height;
+    this.caret = new Graphics();
+    this.createBackground();
+    this.createText();
+    this.createEventText();
     this.password = password;
-    this.x = xyPoint[0];
-    this.y = xyPoint[1];
-    const rect = this.createRect();
-    this.createText(new Text(this.text || this.placeholder || -1, textStyle));
-    this.initListeners(rect);
+    this.realText = '';
+    this._active = false;
+    this.createViewPasswordButton();
   }
 
-  private createRect() {
+  private createBackground() {
     const rect = new Graphics();
-    rect.beginFill(0xfff000, 1);
-    rect.drawRoundedRect(0, 500, 100, 200, 10);
+    rect.beginFill(0xdddddd, 1);
+    console.log(this.width);
+    rect.drawRoundedRect(0, 0, this._width, this._height, 10);
     rect.endFill();
-    return this.app.stage.addChild(rect);
+    rect.interactive = true;
+
+    rect.on('click', () => {
+      if (this.realText === '') {
+        this.text.text = '';
+      }
+      this._active = true;
+    });
+
+    rect.on('pointerover', () => {
+      rect.tint = 0xcccccc;
+    });
+
+    rect.on('pointerout', () => {
+      rect.tint = 0xffffff;
+      this._active = false;
+    });
+
+    this.addChild(rect);
   }
 
-  public createText(text: Text) {
-    text.x = this.x + this.width / 2;
-    text.y = this.y + this.height / 2;
+  private createText() {
+    const text = this.text;
+    text.x = this.width / 2;
+    text.y = this.height / 2;
     text.anchor.set(0.5, 0.5);
-    return this.app.stage.addChild(text);
-  }
 
-  public createcaret() {
-    const caret = new Graphics();
-    caret.beginFill(0x000000, 1);
-    caret.drawRect(this.x + this.width / 2, this.y + this.height / 2, 1, 20);
-    caret.endFill();
-    return this.app.stage.addChild(caret);
-  }
-
-  public animateCaret() {
-    const caret = this.createcaret();
-    caret.alpha = 0;
-    setInterval(() => {
-      caret.alpha = caret.alpha === 0 ? 1 : 0;
-    }, 500);
-  }
-
-  public initListeners(component: DisplayObject) {
-    component.on('click', () => {
-      this.animateCaret();
+    text.on('pointerover', () => {
+      this._active = true;
     });
 
-    component.on('keydown', (e) => {
-      console.log(e);
+    text.on('pointerout', () => {
+      this._active = false;
     });
+
+    this.addChild(text);
+  }
+
+  private createViewPasswordButton() {
+    const button = new Graphics();
+    button.beginFill(0xddddff, 1);
+    button.drawRoundedRect(this._width - 50, this._height / 2 - 25, 50, 50, 10);
+    button.endFill();
+    button.interactive = true;
+    button.buttonMode = true;
+    button.on('pointerdown', () => {
+      if (this.password) {
+        this.text.text = this.realText;
+      }
+    });
+
+    button.on('pointerup', () => {
+      if (this.password) {
+        this.text.text = this.realText.replace(/./g, '*');
+      }
+    });
+
+    if (this.password) {
+      this.addChild(button);
+    }
+  }
+
+  private createEventText() {
+    this.text.on('click', () => {
+      if (this.realText === '') {
+        this.text.text = '';
+      }
+      this._active = true;
+    });
+
+    const specialKeys = [
+      'Tab',
+      'Enter',
+      'Shift',
+      'Control',
+      'Alt',
+      'CapsLock',
+      'Escape',
+      'ArrowLeft',
+      'ArrowRight',
+      'ArrowUp',
+      'ArrowDown',
+      'Delete',
+    ];
+
+    document.addEventListener('keydown', (e) => {
+      if (!this._active) return;
+      if (specialKeys.includes(e.key)) return;
+      if (e.key === 'Backspace') {
+        this.text.text = this.text.text.slice(0, -1);
+      } else {
+        this.text.text += this.password ? '*' : e.key;
+        this.realText += e.key;
+      }
+    });
+  }
+
+  public getText() {
+    return this.realText;
   }
 }
 

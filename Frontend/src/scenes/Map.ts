@@ -18,7 +18,7 @@ class Map {
     this.container = new Container();
     this.generateMap(64);
     this.setContainerParameters();
-    this.setBlur(0);
+    this.setBlur(5);
   }
 
   public async load() {

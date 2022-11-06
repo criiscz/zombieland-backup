@@ -1,5 +1,6 @@
 import Scene from './Scene';
 import { Application, Graphics, Text } from 'pixi.js';
+import InputText from '../components/InputText';
 
 class LoginScene extends Scene {
   constructor(app: Application) {
@@ -12,7 +13,9 @@ class LoginScene extends Scene {
     this.setBackground(0x000000, 0.2);
     this.createBackgroundRect();
     this.createLoginText();
-    this.createUsernameInput();
+    this.createInput();
+    this.createLoginButton();
+    this.createRegisterText();
   }
 
   private createLoginText() {
@@ -28,75 +31,132 @@ class LoginScene extends Scene {
     loginText.anchor.set(0.5, 0.5);
   }
 
-  private createUsernameInput() {
-    const _text = '';
-    const rect = new Graphics();
-    rect.beginFill(0xdddddd, 1);
-    rect.drawRoundedRect(0, 500, 400, 50, 10);
-    rect.endFill();
+  private createInput() {
+    const inputLogin = new InputText(
+      400,
+      50,
+      new Text('Username', {
+        fontFamily: 'Poppins',
+        fontSize: 20,
+        fill: 0x000000,
+      })
+    );
 
-    const text = new Text('Username...', {
-      fontFamily: 'Poppins',
-      fontSize: 20,
-      fill: 0x888888,
-    });
+    inputLogin.x = this.app.screen.width / 2 - 200;
+    inputLogin.y = this.app.screen.height / 2;
 
-    text.x = 200;
-    text.y = 525;
-    text.anchor.set(0.5, 0.5);
+    this.addChild(inputLogin);
 
-    const caret = new Graphics();
-    caret.beginFill(0x000000, 1);
-    caret.drawRect(200, 512, 1, 30);
-    caret.endFill();
-    caret.alpha = 0;
+    const inputPassword = new InputText(
+      400,
+      50,
+      new Text('Password', {
+        fontFamily: 'Poppins',
+        fontSize: 20,
+        fill: 0x000000,
+      }),
+      true
+    );
 
-    rect.interactive = true;
-    rect.on('pointerdown', () => {
-      text.text = '';
-      text.style.fill = 0x000000;
-      animate();
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Alt' || e.key === 'Control') return;
-        if (e.key === 'Backspace') {
-          text.text = text.text.slice(0, -1);
-          animateCaret(false);
-        } else {
-          text.text += e.key;
-          animateCaret(true);
-        }
-      });
-    });
+    inputPassword.x = this.app.screen.width / 2 - 200;
+    inputPassword.y = this.app.screen.height / 2 + 100;
 
-    const animate = () => {
-      setInterval(() => {
-        caret.alpha = caret.alpha === 0 ? 1 : 0;
-      }, 500);
-    };
-
-    const animateCaret = (back: boolean) => {
-      if (!back) caret.x -= 5;
-      else caret.x += 5;
-      if (caret.x > 600) caret.x = 200;
-      if (caret.x < 0) caret.x = 0;
-    };
-
-    rect.addChild(text);
-    rect.addChild(caret);
-    this.addChild(rect);
+    this.addChild(inputPassword);
   }
 
   private createBackgroundRect() {
     const background = new Graphics();
     background.beginFill(0xffffff, 1);
-    background.drawRect(
+    background.drawRoundedRect(
       this.app.screen.width / 2 - 300,
       this.app.screen.height / 2 - 200,
       600,
-      400
+      550,
+      20
     );
     background.endFill();
     this.addChild(background);
+  }
+
+  private createLoginButton() {
+    const button = new Graphics();
+    button.beginFill(0x000000, 1);
+    button.drawRoundedRect(
+      this.app.screen.width / 2 - 100,
+      this.app.screen.height / 2 + 200,
+      200,
+      50,
+      10
+    );
+    button.endFill();
+    button.interactive = true;
+    button.buttonMode = true;
+    button.on('pointerdown', () => {
+      console.log('Register ');
+    });
+
+    const buttonText = new Text('Login', {
+      fontFamily: 'Poppins',
+      fontSize: 20,
+      fill: 0xffffff,
+    });
+
+    buttonText.x = this.app.screen.width / 2;
+    buttonText.y = this.app.screen.height / 2 + 225;
+    buttonText.anchor.set(0.5, 0.5);
+
+    this.addChild(button);
+    this.addChild(buttonText);
+
+    button.on('pointerover', () => {
+      button.alpha = 0.5;
+    });
+
+    button.on('pointerout', () => {
+      button.alpha = 1;
+    });
+  }
+
+  private createRegisterText() {
+    const registerText = this.createText(
+      new Text('Register', {
+        fontFamily: 'Poppins',
+        fontSize: 20,
+        fill: 0x000000,
+      })
+    );
+    registerText.x = this.app.screen.width / 2;
+    registerText.y = this.app.screen.height / 2 + 300;
+    registerText.anchor.set(0.5, 0.5);
+    registerText.interactive = true;
+    registerText.buttonMode = true;
+    registerText.on('pointerdown', () => {
+      console.log('Register ');
+    });
+    this.addChild(registerText);
+  }
+
+  private addListeners(button: Graphics, callback: () => void) {
+    button.on('pointerdown', () => {
+      button.scale.set(0.95, 0.95);
+      button.x += (this.app.screen.width / 2) * 0.05;
+      button.y += (this.app.screen.height / 2) * 0.05;
+      callback();
+    });
+
+    button.on('pointerover', () => {
+      button.alpha = 0.8;
+    });
+
+    button.on('pointerout', () => {
+      button.alpha = 1;
+    });
+
+    button.on('pointerup', () => {
+      button.scale.set(1, 1);
+      button.x -= (this.app.screen.width / 2) * 0.05;
+      button.y -= (this.app.screen.height / 2) * 0.05;
+    });
   }
 }
 

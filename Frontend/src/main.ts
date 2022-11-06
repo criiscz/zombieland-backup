@@ -1,10 +1,11 @@
-import { Application, InteractionEvent, Sprite } from 'pixi.js';
+import { Application, InteractionEvent, Sprite, Text } from 'pixi.js';
 import { Map } from './scenes/Map';
 import { Player } from './entities/Player';
 import { Connection } from './connections/connection';
 import { assets } from './assetsLoader';
 import { MainScene } from './scenes/MainScene';
 import LoginScene from './scenes/LoginScene';
+import InputText from './components/InputText';
 
 function getRandomInt(max: number) {
   return Math.floor(Math.random() * max);
@@ -126,8 +127,9 @@ const main = (app: Application) => {
 
   const initGame = () => {
     addBushes();
-    // new LoginScene(app);
-    new MainScene(app);
+    new LoginScene(app);
+    // const mainScene = new MainScene(app);
+    // mainScene.visible = true;
     // new ScreenInitial(app);
     // new ScreenGameOver(app);
     // new ScreenGame(app);
