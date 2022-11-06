@@ -6,6 +6,7 @@ import { assets } from './assetsLoader';
 import { MainScene } from './scenes/MainScene';
 import LoginScene from './scenes/LoginScene';
 import InputText from './components/InputText';
+import ScreenGame from './scenes/ScreenGame';
 
 function getRandomInt(max: number) {
   return Math.floor(Math.random() * max);
@@ -125,14 +126,30 @@ const main = (app: Application) => {
     });
   };
 
+  function checkIfUserIsLoggedIn() {
+    const isUserLoggedIn = localStorage.getItem('isUserLoggedIn');
+    console.warn(
+      "[main.ts {ln:128}] This action is not implemented yet. It's just a" +
+        ' mockup' +
+        ' (att sTeck :D)'
+    );
+    if (isUserLoggedIn === 'true') {
+      map.setBlur(0);
+      // add player and send data to server.
+    } else {
+      if (document.location.pathname !== '/login.html') {
+        map.setBlur(5);
+        document.location.href = '/login.html';
+      }
+    }
+  }
+
   const initGame = () => {
+    checkIfUserIsLoggedIn();
     addBushes();
-    new LoginScene(app);
-    // const mainScene = new MainScene(app);
-    // mainScene.visible = true;
     // new ScreenInitial(app);
     // new ScreenGameOver(app);
-    // new ScreenGame(app);
+    new ScreenGame(app);
     initAppPreferences();
     initListeners();
     initGameLoop();

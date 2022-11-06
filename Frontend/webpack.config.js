@@ -2,7 +2,6 @@ const path = require('path');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
-
 module.exports = {
   // Basic configuration
   entry: './src/index.ts',
@@ -15,6 +14,10 @@ module.exports = {
         test: /\.ts$/,
         use: 'ts-loader',
         exclude: /node_modules/,
+      },
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader'],
       },
     ],
   },
@@ -33,6 +36,14 @@ module.exports = {
   plugins: [
     // No need to write a index.html
     new HtmlWebpackPlugin(),
+    new HtmlWebpackPlugin({
+      template: 'public/login.html',
+      filename: 'login.html',
+    }),
+    new HtmlWebpackPlugin({
+      template: 'public/register.html',
+      filename: 'register.html',
+    }),
     // Do not accumulate files in ./dist
     new CleanWebpackPlugin(),
     // Copy assets to serve them

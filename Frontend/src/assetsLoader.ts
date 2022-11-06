@@ -20,6 +20,8 @@ const playerLoader = (app: Application, callback: () => void) => {
   app.loader.load(callback);
 };
 
+const hearth = Assets.load('./assets/');
+
 // create a list of assets
 const assets = {
   playerLoader,
