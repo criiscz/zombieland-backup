@@ -1,0 +1,141 @@
+1) add Encrypt class and encrypt method.
+
+2) create UserController
+	create method to login us  Authentication()
+	
+3) create class to represent the datas neecessary for log in
+	AuthRequest.cs	
+		
+		[HttpPost("login")]
+        public IActionResult Authentication([FromBody] AuthRequest authRequest) {
+            return Ok(authRequest);
+        }
+
+4) create services to dependency injection!
+	create folder services
+		like springboot we create an interface and  a implementation of that interface
+		IUserService 
+			UserService => it has an implementation of IUserService
+
+5) create a class to response once you have the token
+	public class UserResponse {
+        public String nickName { get; set; }
+        public String token { get; set; }
+    }
+	
+6) In UserService implement Authentication method
+	public UserResponse Authentication(AuthRequest authRequest) {
+            UserResponse userResponse = new UserResponse();
+
+            string userPassword = Encrypt.GetSHA256(authRequest.password); // viene encriptada entonces la desencriptamos
+
+            //hacemos la query que valide que esa contrasenia coincida con la que tiene el usuario
+            var userFound =  myBackZombieLandContext.Users.Where(u => u.nickName == authRequest.nickName
+                                        && u.password == userPassword).FirstOrDefault();
+            if (userFound == null) {
+                return null;
+            }
+            userResponse.nickName = userFound.nickName;
+            return userResponse;
+        }
+7) inject dependencies in program.cs
+    //Inject the user services trought scoped
+    builder.Services.AddScoped<IUserService, UserService>();
+
+8) Use the service in userController  injecting it.
+    private IUserService _userService;
+
+        public UsersController(BackZombieLandContext context, IUserService userService)
+        {
+            _context = context;
+            _userService = userService;
+        }
+9)now we finish implementing the authentication method in UsersController, so far we only validate that user
+  and password are correct
+        [HttpPost("login")]
+        public IActionResult Authentication([FromBody] AuthRequest authRequest) {
+            var userResponse = _userService.Authentication(authRequest);
+            if (userResponse == null)
+                return BadRequest("Invalid credentials!");
+
+
+            return Ok(authRequest);
+        }
+
+10) well!, so far we validated the datas when they're encrypted, now we're going to get the TOKEN!      
+
+11) add the secret word in appsettings.json
+  "AppSettings": {
+    "secret": "jjcv202202"
+  },
+
+12) create a model to represent AppSettings to access to "secret" to be able to create the Token!
+    add the settings to the builder to inject it to be able to access later.
+    //JWT
+    var myAppSettingsSection = builder.Configuration.GetSection("AppSettings");
+    builder.Services.Configure<AppSettings>(myAppSettingsSection);
+
+13) get our key trought myAppSettingsSection and parse it with getBytes
+    var jwtKey = Encoding.ASCII.GetBytes(myAppSettingsSection.Get<AppSettings>().secret);
+
+14) configure JWT and add the next dependencies
+   DEPENDENCIES 
+       Microsoft.AspNetCore.Authentication.JwtBearer
+       System.IdentityModel.Tokens.Jwt
+   
+   CONFIGURATION
+       var jwtKey = Encoding.ASCII.GetBytes(myAppSettingsSection.Get<AppSettings>().secret);
+   
+       builder.Services.AddAuthentication(d => {
+            d.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            d.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+
+        })
+        .AddJwtBearer(d => {
+            d.RequireHttpsMetadata = false;
+            d.SaveToken = true;
+            d.TokenValidationParameters = new TokenValidationParameters {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(jwtKey),// Important! => here we add the secret word!!!
+                ValidateIssuer = false,
+                ValidateAudience = false
+            };
+        });
+
+15) use authentication
+    app.UseAuthentication(); 
+
+16) we are about to finish, we are gonna go to the service and create the Token (min 44:00)
+    inject appSettings in the service
+        private readonly AppSettings _appSettings;
+        public UserService(BackZombieLandContext myBackZombieLandContext, IOptions<AppSettings> appSettings) {
+            this.myBackZombieLandContext = myBackZombieLandContext;
+            _appSettings = appSettings.Value;
+        }
+
+17) now create the token, for that we create the next method in the service
+    
+    private string GetToken(Users userFound) {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_appSettings.secret);
+            var tokenDescriptor = new SecurityTokenDescriptor {
+                Subject = new ClaimsIdentity(
+                    new Claim[] {
+                        new Claim(ClaimTypes.NameIdentifier, userFound.id.ToString()),
+                        new Claim(ClaimTypes.Email, userFound.email),//if we want many claims here we can create them.
+                    }),
+                    Expires = DateTime.UtcNow.AddHours(1),
+                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),SecurityAlgorithms.HmacSha256Signature)//here is where encrypt the datas!
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
+    }
+
+    so far we already have the Token!
+
+18) finally, to have a safe api we add the next anotation in the controller to protect it
+    [Authorize]
+       now nobody can access to the api without a token!
+
+    
+

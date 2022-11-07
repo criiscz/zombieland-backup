@@ -7,19 +7,25 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BackZombieLand.Model;
 using Data;
+using BackZombieLand.Model.MyAuthentication;
+using BackZombieLand.services;
+using Microsoft.AspNetCore.Authorization;
 
-namespace BackZombieLand.Controllers
-{
+namespace BackZombieLand.Controllers {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UsersController : ControllerBase
     {
         private readonly BackZombieLandContext _context;
+
+        
 
         public UsersController(BackZombieLandContext context)
         {
             _context = context;
         }
+
 
         // GET: api/Users
         [HttpGet]
