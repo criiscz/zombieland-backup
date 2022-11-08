@@ -4,6 +4,8 @@ import { assets } from '../assetsLoader';
 import { Map } from '../scenes/Map';
 import { Connection } from '../connections/connection';
 
+// import { NMap } from '../scenes/NMap';
+
 class Player {
   player: Sprite;
   private id: number;
@@ -32,7 +34,7 @@ class Player {
     this.maxHp = player.maxHp;
     this.score = player.score;
     this.isDead = player.isDead;
-
+    console.log(player.x, player.y);
     if (
       app.loader.resources.player &&
       app.loader.resources.player.spritesheet
@@ -62,6 +64,7 @@ class Player {
     this.player.scale.set(1.2, 1.2);
     this.player.anchor.set(0, 0);
     this.player.name = 'player';
+    this.player.zIndex = 100;
     map.addChild(this.player);
   }
 

@@ -1,6 +1,7 @@
 import { Application } from 'pixi.js';
 import { Player } from '../entities/Player';
 import { Map } from '../scenes/Map';
+import { NMap } from '../scenes/NMap';
 
 export class Connection {
   private readonly app: Application;
@@ -21,16 +22,16 @@ export class Connection {
   }
 
   /**
-    My logic here was shit, sorry (again) friend :D
-    We need to check if a player has been disconnected from the server, and remove the sprite!
-    I think a inner join can work here, this logic must be perfect!
-  **/
+   My logic here was shit, sorry (again) friend :D
+   We need to check if a player has been disconnected from the server, and remove the sprite!
+   I think a inner join can work here, this logic must be perfect!
+   **/
   handleInput(input: string, myId: number) {
     const players: any[] = JSON.parse(input).players.filter(
       (player: any) => player.id !== myId
     );
     this.renderedPlayers.forEach((renderedPlayer) => {
-      let incommingPlayer: any = players.find(
+      const incommingPlayer: any = players.find(
         (element) => element.id === renderedPlayer.getId()
       );
       if (incommingPlayer) {
@@ -44,7 +45,7 @@ export class Connection {
     });
     players.forEach((current) => {
       const isAlreadyInList = this.renderedPlayers.find(
-        (player) => player.getId() == current.id
+        (player) => player.getId() === current.id
       );
       if (!isAlreadyInList) {
         this.renderedPlayers.push(

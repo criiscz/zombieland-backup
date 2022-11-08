@@ -32,10 +32,10 @@ class Map {
   }
 
   public setContainerParameters() {
-    this.container.height = this.app.screen.height;
-    this.container.width = this.app.screen.width;
     this.container.x = this.app.screen.width / 2;
     this.container.y = this.app.screen.height / 2;
+    this.container.pivot.x = this.app.screen.width / 2;
+    this.container.pivot.y = this.app.screen.height / 2;
   }
 
   public generateMap(tileSize = 32, mapSize = 64) {
@@ -52,7 +52,7 @@ class Map {
     });
     this.width = mapSize * tileSize;
     this.height = mapSize * tileSize;
-    this.app.stage.addChild(this.container).zIndex = 0;
+    this.app.stage.addChild(this.container);
   }
 
   public addChild(object: DisplayObject): DisplayObject {
