@@ -47,7 +47,7 @@ async fn handle_input(
             input_message.complete_information(address);
             let attacks_task = handle_attacks(input_message.attacks, attacks_state);
             let events_task = handle_player_update(input_message.player, players_state);
-            tokio::join!(attacks_task, events_task);
+            _ = tokio::join!(tokio::spawn(attacks_task,), tokio::spawn(events_task));
         }
         Err(error) => {
             log::warn!("Can't deserialize the input! {}", error)
