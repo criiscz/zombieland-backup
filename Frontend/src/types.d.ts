@@ -17,4 +17,13 @@ interface IPlayer {
   isDead: boolean;
 }
 
-export { SpritesList, IPlayer };
+interface IEnemy {
+  id: number;
+  x: number;
+  y: number;
+  axis: number;
+  speed: number;
+  hp: number;
+}
+
+export { SpritesList, IPlayer, IEnemy };

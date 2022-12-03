@@ -4,8 +4,6 @@ import { assets } from '../assetsLoader';
 import { Map } from '../scenes/Map';
 import { Connection } from '../connections/connection';
 
-// import { NMap } from '../scenes/NMap';
-
 class Player {
   player: Sprite;
   private id: number;

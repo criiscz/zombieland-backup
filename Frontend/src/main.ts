@@ -5,6 +5,7 @@ import ScreenGame from './scenes/ScreenGame';
 import { Map } from './scenes/Map';
 import { assets } from './assetsLoader';
 import { ViewPointer } from './events/ViewPointer';
+import { Enemy } from './entities/Enemy';
 
 function getRandomInt(max: number) {
   return Math.floor(Math.random() * max);
@@ -16,6 +17,7 @@ const main = (app: Application) => {
   const connection = new Connection(app, map, myId);
   const keys: { [key: string]: boolean } = {};
   let player: Player;
+  let enemy: Enemy;
 
   const initAppPreferences = () => {
     app.stage.sortableChildren = true;
@@ -92,6 +94,17 @@ const main = (app: Application) => {
     collisionMap(player);
   }
 
+  const addZombie = () => {
+    return new Enemy(app, map, {
+      id: 12,
+      x: 10,
+      y: 10,
+      axis: 32,
+      speed: 5,
+      hp: 100,
+    });
+  };
+
   const initGameLoop = (player: Player) => {
     app.ticker.add(() => {
       updatePlayer(player);
@@ -157,6 +170,7 @@ const main = (app: Application) => {
     initAppPreferences();
     if (document.location.pathname === '/') {
       player = initPlayer();
+      enemy = addZombie();
       initListeners(player);
       initGameLoop(player);
       map.updatePivot(
