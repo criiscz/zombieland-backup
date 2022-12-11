@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='UTF-8'>
+  <title>Register | Zombieland</title>
+  <style>
+    body {
+      background-color: #f5f5f5;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      width: 100vw;
+      margin: 0;
+    }
+
+    .title {
+      font-size: 1.5rem;
+      font-weight: 500;
+      margin-bottom: 1rem;
+      color: white;
+      z-index: 1000;
+      text-shadow: 0 0 5px #000;
+    }
+
+    .register {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      height: 25rem;
+      max-width: 300px;
+      margin: 0 auto;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .register h1 {
+      font-size: 1.5em;
+      font-weight: 300;
+      margin: 0 0 30px 0;
+      padding: 0;
+    }
+
+    .register input {
+      font-size: 1em;
+      padding: 10px;
+      -webkit-appearance: none;
+      display: block;
+      border: 1px solid #ccc;
+      margin-bottom: 1em;
+      border-radius: 5px;
+    }
+
+    .register button[type="submit"] {
+      background: #1c9b37;
+      border-color: transparent;
+      border-radius: 5px;
+      color: #fff;
+      cursor: pointer;
+      width: 100%;
+      padding: 10px;
+    }
+
+    .register button[type="submit"]:hover {
+      background: #15792b;
+    }
+
+    .register button[type="submit"]:active {
+      background: #0f5b1f;
+    }
+
+    a {
+      color: #0066ff;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    p {
+      color: #585858;
+    }
+
+    #password-mismatch {
+      color: red;
+      font-size: 1rem;
+      font-weight: 500;
+      margin-top: 0;
+      margin-bottom: 1rem;
+      display: none;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    canvas {
+      position: absolute;
+    }
+
+  </style>
+
+</head>
+<body>
+  <div class='title'>
+    <h1>Zombieland</h1>
+  </div>
+  <div class='register'>
+    <h1>Register</h1>
+    <form id='register-form' action=''>
+      <input id='username' type='text' name='username' placeholder='Username'>
+      <input id='password' type='password' name='password' placeholder='Password'>
+      <input id='password2' type='password' name='password2' placeholder='Confirm Password'>
+      <p id='password-mismatch'>Passwords do not match.</p>
+      <button type='submit'>Register</button>
+    </form>
+    <p>Have an account? <a href='login.html'> Login now.</a></p>
+  </div>
+  <script>
+    function setPassworMismatch() {
+      const password = document.getElementById('password');
+      const password2 = document.getElementById('password2');
+      const textMismatch = document.getElementById('password-mismatch');
+
+      password.style.borderColor = 'red';
+      password2.style.borderColor = 'red';
+      textMismatch.style.display = 'block';
+
+      password.style.backgroundColor = 'rgba(255, 0, 0, 0.1)';
+      password2.style.backgroundColor = 'rgba(255, 0, 0, 0.1)';
+
+      setTimeout(() => {
+        password.style.borderColor = '#ccc';
+        password2.style.borderColor = '#ccc';
+        textMismatch.style.display = 'none';
+
+        password.style.backgroundColor = 'white';
+        password2.style.backgroundColor = 'white';
+      }, 3000);
+    }
+
+    // register user
+    function register() {
+      if (document.getElementById('password').value !== document.getElementById('password2').value) {
+        setPassworMismatch();
+        return;
+      }
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      console.log(document.getElementById('username'), password);
+
+      // using fetch api to make a post request to the server
+      fetch('/api/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: username,
+          password: password,
+        }),
+      }).then(
+        // if the request is successful
+        function(response) {
+          // if (response.status !== 200) {
+          // console.log('Looks like there was a problem. Status Code: ' +
+          //   response.status);
+          console.log(response);
+          window.location.href = 'login.html';
+          // Examine the text in the response
+          // response.json().then(function(data) {
+          //   console.log(data);
+          //   if (data.success) {
+          //     window.location.href = 'login.html';
+          //   }
+          // });
+        }
+
+        ,
+      )
+        .catch(function(err) {
+          console.log('Fetch Error :-S', err);
+        });
+    }
+
+    const form = document.getElementById('register-form');
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      register();
+    });
+
+
+  </script>
+</body>
+</html>

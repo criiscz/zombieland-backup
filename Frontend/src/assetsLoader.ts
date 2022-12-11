@@ -1,4 +1,5 @@
-import { Application } from '@pixi/app';
+import { Application } from 'pixi.js';
+import '../assets/entities/player.json';
 import { Assets } from '@pixi/assets';
 
 // load assets
@@ -18,6 +19,8 @@ const playerLoader = (app: Application, callback: () => void) => {
   app.loader.add('player', './assets/entities/player.json');
   app.loader.load(callback);
 };
+
+const hearth = Assets.load('./assets/');
 
 // create a list of assets
 const assets = {

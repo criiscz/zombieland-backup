@@ -8,5 +8,6 @@
     // Set your preferences here for TypeScript
     "strict": true,
     "esModuleInterop": true,
+    "resolveJsonModule": true
   }
 }

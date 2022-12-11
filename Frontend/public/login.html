@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='UTF-8'>
+  <title>Login | Zombieland</title>
+  <script src='test.js'></script>
+  <style>
+    body {
+      background-color: #f5f5f5;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      width: 100vw;
+      margin: 0;
+    }
+
+    .title {
+      font-size: 1.5rem;
+      font-weight: 500;
+      margin-bottom: 1rem;
+      color: white;
+      z-index: 1000;
+      text-shadow: 0 0 5px #000;
+    }
+
+    .login {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      height: 20rem;
+      max-width: 300px;
+      margin: 0 auto;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .login h1 {
+      font-size: 1.5em;
+      font-weight: 300;
+      margin: 0 0 30px 0;
+      padding: 0;
+    }
+
+    .login input {
+      font-size: 1em;
+      padding: 10px;
+      -webkit-appearance: none;
+      display: block;
+      border: 1px solid #ccc;
+      margin-bottom: 1em;
+      border-radius: 5px;
+    }
+
+    .login button[type="submit"] {
+      background: #1c9b37;
+      border-color: transparent;
+      border-radius: 5px;
+      color: #fff;
+      cursor: pointer;
+      width: 100%;
+      padding: 10px;
+    }
+
+    .login button[type="submit"]:hover {
+      background: #15792b;
+    }
+
+    .login button[type="submit"]:active {
+      background: #0f5b1f;
+    }
+
+    a {
+      color: #0066ff;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    p {
+      color: #585858;
+    }
+
+    canvas {
+      position: absolute;
+    }
+
+  </style>
+</head>
+<body>
+  <div class='title'>
+    <h1>Zombieland</h1>
+  </div>
+  <div class='login'>
+    <h1>Login</h1>
+    <form id='form-login' action='' method='post'>
+      <input type='text' name='username' placeholder='username' required='required' />
+      <input type='password' name='password' placeholder='Password' required='required' />
+      <button type='submit' class='btn btn-primary btn-block btn-large'>Let me
+        in.
+      </button>
+    </form>
+    <p>Not an account? <a href='register.html'> Register now.</a></p>
+  </div>
+  <script>
+    const form = document.getElementById('form-login');
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      login();
+    });
+
+    const login = () => {
+      const username = document.getElementsByName('username')[0].value;
+      const password = document.getElementsByName('password')[0].value;
+      const data = {
+        username,
+        password,
+      };
+      fetch('/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      }).then((res) => {
+        if (res.status !== 200) {
+          localStorage.setItem('isUserLoggedIn', 'true');
+          window.location.href = '/';
+        } else {
+          alert('Invalid username or password');
+        }
+      });
+    };
+  </script>
+</body>
+</html>
