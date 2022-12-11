@@ -1,4 +1,5 @@
 use crate::domain::{
+    attack::Bullet,
     enemy::Enemy,
     player::Player,
     state_types::{EnemiesState, PlayersState},
@@ -25,7 +26,7 @@ pub fn fake_players(amount: u16) -> PlayersState {
 }
 
 #[allow(dead_code)]
-fn fake_player(index: u16) -> Player {
+pub fn fake_player(index: u16) -> Player {
     Player {
         id: index,
         name: String::from(format! {"Bot #{}", index}),
@@ -48,11 +49,22 @@ pub fn fake_enemies(amount: u16) -> EnemiesState {
 }
 
 #[allow(dead_code)]
-fn fake_enemy(index: u16) -> Enemy {
+pub fn fake_enemy(index: u16) -> Enemy {
     Enemy {
         position_y: 100.0 + index as f32,
         position_x: 100.0 + index as f32,
         skin: 0,
         axis: 0,
+    }
+}
+
+#[allow(dead_code)]
+pub fn fake_bullet() -> Bullet {
+    Bullet {
+        attack_type: "bullet".to_owned(),
+        angle: 30.5,
+        position_y: 300.0,
+        position_x: 100.0,
+        player_id: 1,
     }
 }
