@@ -6,8 +6,11 @@ use crate::{
         attacks::handle_attacks,
         players::{handle_player_disconnection, handle_player_update},
     },
-    domain::{attack::Bullet, input_message::InputMessage},
-    environment::environment::{BulletsState, PlayersState},
+    domain::{
+        attack::Bullet,
+        input_message::InputMessage,
+        state_types::{BulletsState, PlayersState},
+    },
 };
 
 pub fn start_player_input_handler(

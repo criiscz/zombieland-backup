@@ -7,6 +7,7 @@ authors = ["Nojipiz"]
 [dependencies]
 serde = { version = "1.0.145", features = ["derive"] }
 tokio = { version = "1.21.2", features = ["full", "net", "time"] }
+async-trait = "0.1.58"
 tokio-tungstenite = "0.17.2"
 futures-util = "0.3.24"
 redis = "0.22.0"

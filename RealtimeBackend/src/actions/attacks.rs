@@ -1,4 +1,4 @@
-use crate::{domain::attack::Bullet, environment::environment::BulletsState};
+use crate::domain::{attack::Bullet, state_types::BulletsState};
 
 pub async fn handle_attacks(input: Vec<Bullet>, bullets: BulletsState) {
     match (*bullets).lock().await {

@@ -1,4 +1,4 @@
-use crate::{domain::player::Player, environment::environment::PlayersState};
+use crate::domain::{player::Player, state_types::PlayersState};
 
 pub async fn handle_player_update(mut input: Player, players_state: PlayersState) {
     match (*players_state).lock().await {
