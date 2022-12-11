@@ -15,6 +15,7 @@ export class Connection {
     this.app = app;
     this.map = map;
     this.ws.onmessage = (event) => {
+      console.log("message")
       this.handleInput(event.data, myId);
     };
   }
@@ -29,6 +30,7 @@ export class Connection {
    I think an inner join can work here, this logic must be perfect!
    **/
   handleInput(input: string, myId: number) {
+    console.log(input)
     this.handlePlayer(input, myId);
     this.handleEnemies(input);
   }
