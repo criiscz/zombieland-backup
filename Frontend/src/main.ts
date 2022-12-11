@@ -147,17 +147,20 @@ const main = (app: Application) => {
   };
 
   function checkIfUserIsLoggedIn() {
-    const isUserLoggedIn = localStorage.getItem('isUserLoggedIn');
+    const isUserLoggedIn = localStorage.getItem('token_user');
     console.warn(
       "[main.ts {ln:128}] This action is not implemented yet. It's just a" +
         ' mockup' +
         ' (att sTeck :D)'
     );
-    if (isUserLoggedIn === 'true') {
+    if (isUserLoggedIn !== null) {
       map.setBlur(0);
       // add player and send data to server.
     } else {
-      if (document.location.pathname !== '/login.html') {
+      if (
+        document.location.pathname !== '/login.html' &&
+        document.location.pathname !== '/register.html'
+      ) {
         map.setBlur(5);
         document.location.href = '/login.html';
       }
