@@ -48,7 +48,7 @@ impl EnemiesPhysics {
     }
 
     async fn move_in_direction_to(enemy: &mut Enemy, position: (f32, f32)) {
-        const ENEMIES_SPEED: f32 = 0.01;
+        const ENEMIES_SPEED: f32 = 1.0;
         if enemy.position_x > position.0 {
             enemy.position_x -= ENEMIES_SPEED;
         }

@@ -56,7 +56,7 @@ impl Environment {
         loop {
             let state_copy = game_state.clone();
             _ = tokio::join!(
-                tokio::spawn(async move { Environment::game_run(state_copy.to_owned()) }),
+                tokio::spawn(async move { Environment::game_run(state_copy.to_owned()).await }),
                 tokio::spawn(async move { sleep(Duration::from_millis(10)).await })
             );
             Environment::send_state_to_channel(game_state.to_owned(), &mut events_channel).await;
@@ -76,7 +76,7 @@ impl Environment {
         let output_message = OutputMessage::from(game_state).await;
         events_channel
             .publish::<String, String, bool>(
-                "zombieland_channel".to_owned(),
+                "zlchannel".to_owned(),
                 serde_json::to_string(&output_message).unwrap(),
             )
             .unwrap();

@@ -2,6 +2,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Enemy {
+    pub id: usize,
     pub position_y: f32,
     pub position_x: f32,
     pub skin: u8,
@@ -11,6 +12,7 @@ pub struct Enemy {
 impl Clone for Enemy {
     fn clone(&self) -> Self {
         Enemy {
+            id: self.id,
             position_x: self.position_x.clone(),
             position_y: self.position_y.clone(),
             skin: self.skin.clone(),
@@ -20,8 +22,9 @@ impl Clone for Enemy {
 }
 
 impl Enemy {
-    pub fn new() -> Enemy {
+    pub fn new(id: usize) -> Enemy {
         Enemy {
+            id,
             position_y: 100.0,
             position_x: 100.0,
             skin: 0,
