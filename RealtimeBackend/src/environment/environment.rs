@@ -67,9 +67,9 @@ impl Environment {
         let interactions = InteractionsModule::new(game_state.clone());
         let physics = PhysicsModule::new(game_state.clone());
         let spawns = SpawnsModule::new(game_state.to_owned());
-        interactions.run().await;
         physics.run().await;
         spawns.run().await;
+        interactions.run().await;
     }
 
     async fn send_state_to_channel(game_state: GameState, events_channel: &mut Connection) {

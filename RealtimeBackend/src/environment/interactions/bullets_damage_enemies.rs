@@ -1,6 +1,6 @@
 use crate::domain::{
     attack::Bullet,
-    enemy::Enemy,
+    enemy::{self, Enemy},
     state_types::{BulletsState, EnemiesState},
 };
 use async_trait::async_trait;
@@ -16,26 +16,30 @@ impl DamageToEnemiesByBullets {
     pub fn new(enemies: EnemiesState, bullets: BulletsState) -> DamageToEnemiesByBullets {
         DamageToEnemiesByBullets { bullets, enemies }
     }
+}
 
-    pub async fn run_interaction(&self, enemies: Vec<Enemy>, mut bullets: Vec<Bullet>) {
-        enemies.iter().for_each(|enemy| {
-            bullets.retain_mut(|bullet| {
-                if enemy.position_y == bullet.position_y && enemy.position_x == bullet.position_x {
-                    return false;
-                }
-                return true;
-            })
-        });
+fn has_collision(enemy: &mut Enemy, bullet: &Bullet) -> bool {
+    let space = 50.0;
+    let range_x = (enemy.position_x - space)..(enemy.position_x + space);
+    let range_y = (enemy.position_y - space)..(enemy.position_y + space);
+    if bullet.position_y > range_y.start
+        && bullet.position_y < range_y.end
+        && bullet.position_x > range_x.start
+        && bullet.position_x < range_x.end
+    {
+        return false;
     }
+    return true;
 }
 
 #[async_trait]
 impl Interaction for DamageToEnemiesByBullets {
     async fn run(&self) {
         match tokio::join!(self.enemies.lock(), self.bullets.lock()) {
-            (enemies, bullets) => {
-                self.run_interaction(enemies.to_owned(), bullets.to_owned())
-                    .await;
+            (mut enemies, bullets) => {
+                bullets.iter().for_each(|bullet| {
+                    enemies.retain_mut(|enemy| return has_collision(enemy, bullet))
+                });
             }
         };
     }
