@@ -6,6 +6,8 @@ import { Map } from './scenes/Map';
 import { assets } from './assetsLoader';
 import { ViewPointer } from './events/ViewPointer';
 import { Enemy } from './entities/Enemy';
+import {Bullet} from "./entities/Bullet";
+import {randomInt} from "crypto";
 
 function getRandomInt(max: number) {
   return Math.floor(Math.random() * max);
@@ -38,10 +40,29 @@ const main = (app: Application) => {
     vp.drawPointer2(position);
   };
 
+  const mouseClicked = (event: InteractionEvent) => {
+    // create a new bullet
+    const position = event.data.global;
+    const vp = new ViewPointer(app, player);
+    const angle = vp.getAngle(position);
+    const bullet = new Bullet(app, map, player.x, player.y, angle, player.id, getRandomInt(100) , false);
+
+    const data = JSON.stringify({
+      player: player.getData(),
+      attacks: [bullet.getData()],
+    });
+    console.log(data)
+    if (connection.isConnected()) {
+      connection.sendData(data);
+    }
+    bullet.delete(map);
+  }
+
   const initListeners = (player: Player) => {
     document.addEventListener('keydown', keydown);
     document.addEventListener('keyup', keyup);
     app.stage.on('pointermove', mouseMove, player);
+    app.stage.on('pointerdown', mouseClicked, player);
   };
 
   const collisionBush = (player: Player) => {
@@ -96,7 +117,7 @@ const main = (app: Application) => {
 
   const addZombie = () => {
     return new Enemy(app, map, {
-      id: 12,
+      id: 1,
       x: 10,
       y: 10,
       axis: 32,
@@ -114,7 +135,7 @@ const main = (app: Application) => {
   const initPlayer = () => {
     return new Player(app, map, {
       id: myId,
-      name: 'Player',
+      name: localStorage.getItem('name') || 'Player',
       x: Math.floor(Math.random() * map.width),
       y: Math.floor(Math.random() * map.height),
       axis: 0,
@@ -148,11 +169,6 @@ const main = (app: Application) => {
 
   function checkIfUserIsLoggedIn() {
     const isUserLoggedIn = localStorage.getItem('token_user');
-    console.warn(
-      "[main.ts {ln:128}] This action is not implemented yet. It's just a" +
-        ' mockup' +
-        ' (att sTeck :D)'
-    );
     if (isUserLoggedIn !== null) {
       map.setBlur(0);
       // add player and send data to server.
@@ -167,9 +183,12 @@ const main = (app: Application) => {
     }
   }
 
+  function initLifeScene(player: Player) {
+    const lifeScene = new ScreenGame(app, player);
+  }
+
   const initGame = () => {
     checkIfUserIsLoggedIn();
-    new ScreenGame(app);
     initAppPreferences();
     if (document.location.pathname === '/') {
       player = initPlayer();
@@ -180,6 +199,7 @@ const main = (app: Application) => {
         player.x - player.player.width / 2,
         player.y - player.player.height / 2
       );
+      initLifeScene(player);
       addBushes();
     }
   };

@@ -1,4 +1,4 @@
-import { AnimatedSprite, Application, Sprite } from 'pixi.js';
+import {AnimatedSprite, Application, Sprite, TextStyle, Text} from 'pixi.js';
 import { IPlayer } from '../types';
 import { assets } from '../assetsLoader';
 import { Map } from '../scenes/Map';
@@ -6,7 +6,7 @@ import { Connection } from '../connections/connection';
 
 class Player {
   player: Sprite;
-  private id: number;
+  id: number;
   name: string;
   x: number;
   y: number;
@@ -16,6 +16,8 @@ class Player {
   private maxHp: number;
   private score: number;
   private isDead: boolean;
+
+  private map: Map;
 
   /*
     Maybe the map can be allocated in someplace in shared memory? Like a module or something
@@ -32,6 +34,7 @@ class Player {
     this.maxHp = player.maxHp;
     this.score = player.score;
     this.isDead = player.isDead;
+    this.map = map;
     console.log(player.x, player.y);
     if (
       app.loader.resources.player &&
@@ -64,6 +67,21 @@ class Player {
     this.player.name = 'player';
     this.player.zIndex = 100;
     map.addChild(this.player);
+
+    // add text with the name of the player
+    const style = new TextStyle({
+      fontFamily: 'Arial',
+      fontSize: 12,
+      fill: '#ffffff',
+      align: 'center',
+    });
+    const text = new Text(this.name, style);
+    text.name = 'player_name';
+    text.renderId = this.id;
+    text.x = this.player.x;
+    text.y = this.player.y - 20;
+    text.zIndex = 100;
+    map.addChild(text);
   }
 
   public update(
@@ -71,6 +89,8 @@ class Player {
     connection: Connection,
     map: Map
   ) {
+
+
     let hasChangedPosition = false;
     if (keysMap['w'] || keysMap['ArrowUp'] || keysMap['W']) {
       this.y = this.player.y;
@@ -97,13 +117,23 @@ class Player {
       hasChangedPosition = true;
     }
     if (!hasChangedPosition) return;
-
+    this.updateTextPosition(this.player, map);
     const data = JSON.stringify({
       player: this.getData(),
       attacks: [],
     });
     if (connection.isConnected()) {
       connection.sendData(data);
+    }
+  }
+
+  public updateTextPosition(player: Sprite, map: Map) {
+    const text = map.getChildren().find((child) => {
+      return child.name === 'player_name' && child.renderId === this.id;
+    });
+    if (text) {
+      text.x = player.x;
+      text.y = player.y - 20;
     }
   }
 
@@ -125,10 +155,24 @@ class Player {
   public updatePosition(x: number, y: number) {
     this.player.x = x;
     this.player.y = y;
+
+    // update the text with the name of the player
+    const text = this.map.getChildren().find((child) => {
+      return child.name === 'player_name' && child.renderId === this.id;
+    });
+    if (text) {
+      text.x = x;
+      text.y = y - 20;
+    }
   }
 
   public delete(map: Map) {
     map.removeChild(this.player);
+    map.getChildren().forEach((child) => {
+      if (child.name === 'player_name' && child.renderId === this.id) {
+        map.removeChild(child);
+      }
+    });
   }
 }
 
