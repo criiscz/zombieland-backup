@@ -14,7 +14,7 @@ services:
     depends_on:
       - cache
     environment:
-      CACHE_ADDRESS: "cache:6379"
+      CACHE_ADDRESS: "cache"
       RUST_LOG: "realtime_backend"
       RUST_BACKTRACE: "0"
   cache: 
