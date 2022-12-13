@@ -49,7 +49,7 @@ const main = (app: Application) => {
 
     const data = JSON.stringify({
       player: player.getData(),
-      attacks: bullet.getData(),
+      attacks: [bullet.getData()],
     });
     console.log(data)
     if (connection.isConnected()) {

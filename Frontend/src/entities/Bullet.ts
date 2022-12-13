@@ -53,11 +53,12 @@ class Bullet {
 
   getData() {
     return {
+      attack_type: 'bullet',
       id: this.id,
       position_x: this.x,
       position_y: this.y,
       angle: this.angle,
-      ownerID: this.ownerID,
+      player_id: this.ownerID,
     };
   }
 }
