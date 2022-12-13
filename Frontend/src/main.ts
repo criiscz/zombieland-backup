@@ -51,7 +51,6 @@ const main = (app: Application) => {
       player: player.getData(),
       attacks: [bullet.getData()],
     });
-    console.log(data)
     if (connection.isConnected()) {
       connection.sendData(data);
     }
