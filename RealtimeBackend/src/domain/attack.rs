@@ -35,6 +35,7 @@ impl Display for Bullet {
 impl Clone for Bullet {
     fn clone(&self) -> Self {
         Bullet {
+            id: rand::random::<f32>(),
             attack_type: self.attack_type.clone(),
             angle: self.angle.clone(),
             position_y: self.position_y.clone(),
@@ -46,6 +47,7 @@ impl Clone for Bullet {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Bullet {
+    pub id: f32,
     pub attack_type: String,
     pub angle: f32,
     #[serde(default)]
