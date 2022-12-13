@@ -3,6 +3,7 @@ import { Player } from '../entities/Player';
 import { Map } from '../scenes/Map';
 import { NMap } from '../scenes/NMap';
 import { Enemy } from '../entities/Enemy';
+import {Bullet} from "../entities/Bullet";
 
 export class Connection {
   private readonly app: Application;
@@ -10,12 +11,12 @@ export class Connection {
   private readonly ws: WebSocket = new WebSocket('ws://127.0.0.1:8090');
   private renderedPlayers: Player[] = [];
   private renderedEnemies: Enemy[] = [];
+  private renderedBullets: Bullet[] = [];
 
   constructor(app: Application, map: Map, myId: number) {
     this.app = app;
     this.map = map;
     this.ws.onmessage = (event) => {
-      console.log("message")
       this.handleInput(event.data, myId);
     };
   }
@@ -64,6 +65,31 @@ export class Connection {
             axis: current.axis,
             hp: current.hp,
           })
+        );
+      }
+    });
+  }
+  private handleBullets(input: string) {
+    const bullets: any[] = JSON.parse(input).enemies;
+    this.renderedBullets.forEach((renderedBullet) => {
+      const incommingBullet: any = bullets.find(
+        (enemy) => enemy.id === renderedBullet.getId()
+      );
+      if (incommingBullet) {
+        renderedBullet.updatePosition(
+          incommingBullet.position_x,
+          incommingBullet.position_y
+        );
+      } else {
+        renderedBullet.delete(this.map);
+      }
+    });
+    bullets.forEach((current) => {
+      const isAlreadyInList = this.renderedBullets.find(
+        (bullet) => bullet.getId() === current.id
+      );
+      if (!isAlreadyInList) {
+        this.renderedBullets.push(
         );
       }
     });

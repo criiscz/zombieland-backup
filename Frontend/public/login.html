@@ -125,18 +125,18 @@
       fetch('https://localhost:7088/api/Auth/login', {
         method: 'POST',
         headers: {
-          'accept': "application/json, text/plain, */*",
-          'content-Type': "application/json;charset=utf-8"
+          'Content-Type': 'application/json',
         },
-        mode: 'no-cors',
         body: JSON.stringify(data),
       }).then((res) => {
         if (res.status === 200) {
-          localStorage.setItem('token','true');
-          window.location.href = '/';
+          res.json().then((data) => {
+            localStorage.setItem('token_user', data.token);
+            localStorage.setItem('name', data.nickName);
+            window.location.href = '/';
+          });
         } else {
-          console.log(res.body)
-          alert('Invalid username or password');
+          alert('Username or password is incorrect');
         }
       });
     };

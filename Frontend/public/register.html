@@ -116,7 +116,8 @@
     <form id='register-form' action=''>
       <input id='username' type='text' name='username' placeholder='Username'>
       <input id='password' type='password' name='password' placeholder='Password'>
-      <input id='password2' type='password' name='password2' placeholder='Confirm Password'>
+      <input id='password2' type='password' name='password2' placeholder='Password'>
+      <input id='email' type='email' name='email' placeholder='Email'>
       <p id='password-mismatch'>Passwords do not match.</p>
       <button type='submit'>Register</button>
     </form>
@@ -153,37 +154,28 @@
       }
       const username = document.getElementById('username').value;
       const password = document.getElementById('password').value;
+      const email = document.getElementById('email').value;
       console.log(document.getElementById('username'), password);
 
       // using fetch api to make a post request to the server
-      fetch('/api/register', {
+      fetch('https://localhost:7088/api/Auth/registry', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          username: username,
+          nickName: username,
           password: password,
+          email: email,
         }),
       }).then(
-        // if the request is successful
-        function(response) {
-          // if (response.status !== 200) {
-          // console.log('Looks like there was a problem. Status Code: ' +
-          //   response.status);
-          console.log(response);
-          window.location.href = 'login.html';
-          // Examine the text in the response
-          // response.json().then(function(data) {
-          //   console.log(data);
-          //   if (data.success) {
-          //     window.location.href = 'login.html';
-          //   }
-          // });
-        }
-
-        ,
-      )
+        (response) => {
+          if (response.status === 200) {
+            window.location.href = '/login.html';
+          } else {
+            alert('Something went wrong');
+          }
+        })
         .catch(function(err) {
           console.log('Fetch Error :-S', err);
         });

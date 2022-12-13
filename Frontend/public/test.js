@@ -1,3 +1,0 @@
-const login = () => {
-  alert('login');
-};
