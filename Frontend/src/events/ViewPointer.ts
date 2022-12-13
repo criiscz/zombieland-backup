@@ -33,14 +33,17 @@ class ViewPointer {
   public drawPointer2(point: Point): void {
     const angle = this.getAngle(point);
     const pointer = new Graphics();
-    pointer.lineStyle(5, 0xff0000, 1);
-    pointer.x = this.app.screen.width / 2;
-    pointer.y = this.app.screen.height / 2;
-    pointer.lineTo(
-      1000 * Math.cos(angle * (Math.PI / 180)),
-
-      1000 * Math.sin(angle * (Math.PI / 180))
-    );
+    pointer.lineStyle(2, 0xc1c1c1, 1, 0.5, true);
+    pointer.x = point.x;
+    pointer.y = point.y;
+    // pointer.lineTo(
+    //   1000 * Math.cos(angle * (Math.PI / 180)),
+    //
+    //   1000 * Math.sin(angle * (Math.PI / 180))
+    // );
+    pointer.beginFill(0xc1c1c1, 1);
+    pointer.drawCircle(0, 0, 5);
+    pointer.endFill();
     pointer.name = 'pointer';
     pointer.endFill();
 
@@ -58,7 +61,9 @@ class ViewPointer {
     this.app.stage.removeChild(this.app.stage.getChildByName('pointerText'));
 
     this.app.stage.addChild(pointer).zIndex = 1;
-    this.app.stage.addChild(text).zIndex = 1;
+    // this.app.stage.addChild(text).zIndex = 1;
+
+    // draw the pointer
   }
 }
 

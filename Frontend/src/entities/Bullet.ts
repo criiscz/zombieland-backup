@@ -14,6 +14,7 @@ class Bullet {
     public angle: number,
     public ownerID: number,
     public id: number,
+    public isRendered: boolean,
   ) {
     this.bullet = new Sprite();
     assets.bullet.then((texture) => {
@@ -35,8 +36,11 @@ class Bullet {
     bulletTexture.anchor.set(0.5,0.5 );
     bulletTexture.zIndex = 100;
     this.bullet = bulletTexture;
-    map.addChild(this.bullet);
+    if (this.isRendered) {
+      map.addChild(this.bullet);
+    }
   }
+
 
   public updatePosition(x: number, y: number) {
     this.bullet.x = x;

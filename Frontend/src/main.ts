@@ -45,7 +45,7 @@ const main = (app: Application) => {
     const position = event.data.global;
     const vp = new ViewPointer(app, player);
     const angle = vp.getAngle(position);
-    const bullet = new Bullet(app, map, player.x, player.y, angle, player.id, getRandomInt(100) );
+    const bullet = new Bullet(app, map, player.x, player.y, angle, player.id, getRandomInt(100) , false);
 
     const data = JSON.stringify({
       player: player.getData(),
@@ -55,6 +55,7 @@ const main = (app: Application) => {
     if (connection.isConnected()) {
       connection.sendData(data);
     }
+    bullet.delete(map);
   }
 
   const initListeners = (player: Player) => {

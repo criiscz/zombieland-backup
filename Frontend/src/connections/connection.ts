@@ -31,9 +31,13 @@ export class Connection {
    I think an inner join can work here, this logic must be perfect!
    **/
   handleInput(input: string, myId: number) {
-    console.log(input)
+
+    if(JSON.parse(input).bullets.length > 0) {
+      console.log(JSON.parse(input));
+    }
     this.handlePlayer(input, myId);
     this.handleEnemies(input);
+    this.handleBullets(input)
   }
 
   private handleEnemies(input: string) {
@@ -70,10 +74,10 @@ export class Connection {
     });
   }
   private handleBullets(input: string) {
-    const bullets: any[] = JSON.parse(input).enemies;
+    const bullets: any[] = JSON.parse(input).bullets;
     this.renderedBullets.forEach((renderedBullet) => {
       const incommingBullet: any = bullets.find(
-        (enemy) => enemy.id === renderedBullet.getId()
+        (bullet) => bullet.player_id === renderedBullet.ownerID
       );
       if (incommingBullet) {
         renderedBullet.updatePosition(
@@ -86,10 +90,12 @@ export class Connection {
     });
     bullets.forEach((current) => {
       const isAlreadyInList = this.renderedBullets.find(
-        (bullet) => bullet.getId() === current.id
+        (bullet) => bullet.ownerID === -1
       );
       if (!isAlreadyInList) {
+        console.log("Agrego bullet")
         this.renderedBullets.push(
+          new Bullet(this.app, this.map,current.x,current.y,current.axis, current.player_id, 123, true)
         );
       }
     });
