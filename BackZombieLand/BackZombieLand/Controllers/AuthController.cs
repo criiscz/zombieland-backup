@@ -3,10 +3,13 @@ using BackZombieLand.Model.MyAuthentication;
 using BackZombieLand.services;
 using BackZombieLand.uilities;
 using Data;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BackZombieLand.Controllers {
+    //[EnableCors("Policy_authentication")]
+    [EnableCors]
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase {

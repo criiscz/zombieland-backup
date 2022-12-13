@@ -12,6 +12,23 @@ using Microsoft.CodeAnalysis.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//****CORS SETTINGS**********
+builder.Services.AddCors(options => {
+    options.AddPolicy("Policy_authentication",
+            policy => {
+                policy.WithOrigins("*");
+            });
+    options.AddPolicy("Policy_any_origin",
+           policy => {
+               policy.WithOrigins("*")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+           });
+});
+
+//*****END CORS SETTINGS*****
+
+
 const String keyConnectionString = "PostreSQLConnection";
 var myConnectionString = builder.Configuration.GetConnectionString(keyConnectionString);
 builder.Services.AddDbContext<BackZombieLandContext>(options =>
@@ -85,7 +102,8 @@ if (app.Environment.IsDevelopment())
 }
 
 
-app.UseCors("AllowWebApp");
+//app.UseCors("AllowWebApp");
+app.UseCors();
 
 app.UseAuthentication(); //here we say it that use the authentication!
 
