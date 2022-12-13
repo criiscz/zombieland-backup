@@ -1,4 +1,5 @@
-import { Application } from '@pixi/app';
+import { AnimatedSprite, Application } from 'pixi.js';
+import '../assets/entities/player.json';
 import { Assets } from '@pixi/assets';
 
 // load assets
@@ -18,6 +19,12 @@ const playerLoader = (app: Application, callback: () => void) => {
   app.loader.add('player', './assets/entities/player.json');
   app.loader.load(callback);
 };
+// const enemyLoader = (app: Application, callback: () => void) => {
+//   app.loader.add('player', './assets/entities/player.json').load(callback);
+// };
+
+const hearth = Assets.load('./assets/');
+const sheetEnemy = Assets.load('./assets/entities/zombie.json');
 
 // create a list of assets
 const assets = {
@@ -25,6 +32,7 @@ const assets = {
   map,
   mapTiles,
   bush,
+  sheetEnemy,
 };
 
 export { assets };
