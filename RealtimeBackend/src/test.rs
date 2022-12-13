@@ -62,6 +62,7 @@ pub fn fake_enemy(index: u16) -> Enemy {
 #[allow(dead_code)]
 pub fn fake_bullet() -> Bullet {
     Bullet {
+        id: 0.0,
         attack_type: "bullet".to_owned(),
         angle: 30.5,
         position_y: 300.0,
