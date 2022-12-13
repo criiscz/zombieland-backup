@@ -5,13 +5,14 @@ use redis_async::{client, resp::FromResp};
 use tokio::sync::broadcast::Sender;
 
 pub fn start_player_output_handler(sender: Sender<String>) {
-    let cache_address = env::var("CACHE_ADDRESS").unwrap_or("127.0.0.1:6379".to_string());
+    let cache_port = 6379;
+    let cache_address = env::var("CACHE_ADDRESS").unwrap_or("127.0.0.1".to_string());
     tokio::spawn(async move {
-        let pubsub_connection = client::pubsub_connect(cache_address)
+        let pubsub_connection = client::pubsub_connect(cache_address, cache_port)
             .await
             .expect("Can't connect with Dragonflydb");
         let mut pubsub = pubsub_connection
-            .psubscribe("zombieland_channel")
+            .psubscribe("zlchannel")
             .await
             .expect("Can't subscribe to channel");
         while let Some(message) = pubsub.next().await {

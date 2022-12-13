@@ -23,9 +23,10 @@ impl Spawn for EnemiesSpawns {
     async fn run(&self) {
         match tokio::join!(self.enemies.lock(), self.players.lock()) {
             (mut enemies, players) => {
-                let amount = players.len() - enemies.len();
+                let enemies_len = enemies.len().clone();
+                let amount = players.len() - enemies_len;
                 if amount > 0 {
-                    enemies.push(Enemy::new());
+                    enemies.push(Enemy::new(enemies_len));
                 }
             }
         };

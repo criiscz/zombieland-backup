@@ -51,6 +51,7 @@ pub fn fake_enemies(amount: u16) -> EnemiesState {
 #[allow(dead_code)]
 pub fn fake_enemy(index: u16) -> Enemy {
     Enemy {
+        id: index as usize,
         position_y: 100.0 + index as f32,
         position_x: 100.0 + index as f32,
         skin: 0,
