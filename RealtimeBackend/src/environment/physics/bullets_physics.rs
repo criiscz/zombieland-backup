@@ -24,9 +24,10 @@ impl Physic for BulletsPhysics {
                 && bullet.position_x > -1.0
                 && bullet.position_y > -1.0
             {
+                let bullet_speed: f32 = 3.2;
                 let angle_const = bullet.angle * (PI / 180.0);
-                bullet.position_x += angle_const.cos() * 10.0;
-                bullet.position_y += angle_const.sin() * 10.0;
+                bullet.position_x += angle_const.cos() * bullet_speed;
+                bullet.position_y += angle_const.sin() * bullet_speed;
                 return true;
             }
             return false;
