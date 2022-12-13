@@ -3,6 +3,7 @@ import { Player } from '../entities/Player';
 import { Map } from '../scenes/Map';
 import { NMap } from '../scenes/NMap';
 import { Enemy } from '../entities/Enemy';
+import {Bullet} from "../entities/Bullet";
 
 export class Connection {
   private readonly app: Application;
@@ -10,12 +11,12 @@ export class Connection {
   private readonly ws: WebSocket = new WebSocket('ws://127.0.0.1:8090');
   private renderedPlayers: Player[] = [];
   private renderedEnemies: Enemy[] = [];
+  private renderedBullets: Bullet[] = [];
 
   constructor(app: Application, map: Map, myId: number) {
     this.app = app;
     this.map = map;
     this.ws.onmessage = (event) => {
-      console.log("message")
       this.handleInput(event.data, myId);
     };
   }
@@ -30,9 +31,13 @@ export class Connection {
    I think an inner join can work here, this logic must be perfect!
    **/
   handleInput(input: string, myId: number) {
-    console.log(input)
+
+    if(JSON.parse(input).bullets.length > 0) {
+      console.log(JSON.parse(input));
+    }
     this.handlePlayer(input, myId);
     this.handleEnemies(input);
+    this.handleBullets(input)
   }
 
   private handleEnemies(input: string) {
@@ -64,6 +69,33 @@ export class Connection {
             axis: current.axis,
             hp: current.hp,
           })
+        );
+      }
+    });
+  }
+  private handleBullets(input: string) {
+    const bullets: any[] = JSON.parse(input).bullets;
+    this.renderedBullets.forEach((renderedBullet) => {
+      const incommingBullet: any = bullets.find(
+        (bullet) => bullet.player_id === renderedBullet.ownerID
+      );
+      if (incommingBullet) {
+        renderedBullet.updatePosition(
+          incommingBullet.position_x,
+          incommingBullet.position_y
+        );
+      } else {
+        renderedBullet.delete(this.map);
+      }
+    });
+    bullets.forEach((current) => {
+      const isAlreadyInList = this.renderedBullets.find(
+        (bullet) => bullet.ownerID === -1
+      );
+      if (!isAlreadyInList) {
+        console.log("Agrego bullet")
+        this.renderedBullets.push(
+          new Bullet(this.app, this.map,current.x,current.y,current.axis, current.player_id, 123, true)
         );
       }
     });

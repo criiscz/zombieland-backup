@@ -11,6 +11,8 @@ const mapTiles = [
   Assets.load('./assets/scenes/map_2.png'),
   Assets.load('./assets/scenes/map_3.png'),
 ];
+const bullet = Assets.load('./assets/entities/bullet.png');
+const heart = Assets.load('./assets/scenes/heart.png');
 
 /**
  * Base player animation loader, needs a call function and the context (app) of the game
@@ -19,9 +21,6 @@ const playerLoader = (app: Application, callback: () => void) => {
   app.loader.add('player', './assets/entities/player.json');
   app.loader.load(callback);
 };
-// const enemyLoader = (app: Application, callback: () => void) => {
-//   app.loader.add('player', './assets/entities/player.json').load(callback);
-// };
 
 const hearth = Assets.load('./assets/');
 const sheetEnemy = Assets.load('./assets/entities/zombie.json');
@@ -33,6 +32,8 @@ const assets = {
   mapTiles,
   bush,
   sheetEnemy,
+  bullet,
+  heart,
 };
 
 export { assets };
