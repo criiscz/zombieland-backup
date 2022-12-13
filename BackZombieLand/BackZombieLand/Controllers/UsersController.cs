@@ -7,19 +7,29 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BackZombieLand.Model;
 using Data;
+using BackZombieLand.Model.MyAuthentication;
+using BackZombieLand.services;
+using Microsoft.AspNetCore.Authorization;
+using BackZombieLand.uilities;
+using Microsoft.AspNetCore.Cors;
 
-namespace BackZombieLand.Controllers
-{
+namespace BackZombieLand.Controllers {
+    //[EnableCors("Policy_authentication")]
+    [EnableCors]
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
+
     public class UsersController : ControllerBase
     {
         private readonly BackZombieLandContext _context;
+
 
         public UsersController(BackZombieLandContext context)
         {
             _context = context;
         }
+
 
         // GET: api/Users
         [HttpGet]
@@ -51,7 +61,7 @@ namespace BackZombieLand.Controllers
             {
                 return BadRequest();
             }
-
+            users.password = Encrypt.GetSHA256(users.password);
             _context.Entry(users).State = EntityState.Modified;
 
             try
@@ -73,16 +83,7 @@ namespace BackZombieLand.Controllers
             return NoContent();
         }
 
-        // POST: api/Users
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Users>> PostUsers(Users users)
-        {
-            _context.Users.Add(users);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetUsers", new { id = users.id }, users);
-        }
+      
 
         // DELETE: api/Users/5
         [HttpDelete("{id}")]
